@@ -19,11 +19,28 @@ Built as an interactive product prototype for creative professionals (editors, d
 
 ## 🌟 Core Pillars
 
-1. **AI Creative Director** — Translates natural language briefs into structured campaign concepts, storyboards, and scripts.
+1. **AI Creative Director** — Translates natural language briefs into structured campaign concepts, storyboards, and scripts (Groq Llama 3 + smart fallback templates).
 2. **Workflow Auto-Builder** — Automatically converts creative plans into interactive, editable, node-based execution graphs.
-3. **AI Brand Consistency Guardian** — Enforces Brand DNA (palette, tone, restrictions) and offers 1-click auto-fixes.
+3. **AI Brand Consistency Guardian** — Enforces Brand DNA (palette, tone, restrictions) with rule-based validation and 1-click auto-fixes.
 4. **AI Model Router** — Mathematically scores and selects the optimal AI model for each node based on Quality, Cost, and Speed tradeoffs.
-5. **Agentic Optimizer ("Make this 30% cheaper")** — Dynamically rebalances the workflow without sacrificing critical hero shots.
+5. **Workflow Optimizer** — Dynamically rebalances workflows (e.g., "Make this 30% cheaper") by swapping models while preserving critical nodes.
+
+---
+
+## ⚙️ What's Live vs. Demo
+
+### Fully Functional (Real AI/Logic):
+- ✅ **Model Router** — Real multi-factor weighted scoring across 10+ models (Flux, Runway, Kling, ElevenLabs, etc.)
+- ✅ **Brand Guardian** — Pattern-based rule validation with auto-fix suggestions
+- ✅ **Workflow Optimizer** — Cost/speed optimization algorithms (real node swapping & recalculation)
+- ✅ **Workflow Builder** — Dynamic graph construction with routing & brand checks per node
+- ✅ **Creative Director** — Smart context-aware templates (switches to Groq Llama 3 if API key provided)
+
+### Demo/Placeholder:
+- 📦 Node output images (static placeholders, not real generation)
+- 📦 2 preset projects (Aura Skin & Nova Headphones) for quick demos
+
+**Everything else is live** — custom briefs trigger real agent orchestration with dynamic workflows.
 
 ---
 

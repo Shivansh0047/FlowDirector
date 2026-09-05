@@ -3,6 +3,7 @@ import { Sparkles, ArrowRight, Check, Zap, Layers, Shield, DollarSign, Gauge, Re
 import { useNavigate } from 'react-router-dom'
 import useWorkflowStore from '../context/workflowStore'
 import { DEMO_PRESETS } from '../utils/demoData'
+import { agentsAPI } from '../utils/api'
 
 const CONTENT_TYPES = [
   { id: 'instagram_ad', label: 'Instagram Ad (30s)', desc: 'Polished vertical video with product reveal & CTA' },
@@ -74,14 +75,55 @@ export default function BriefChatbot({ onComplete }) {
   }
 
   // Submit and generate workflow
-  const handleGenerateWorkflow = () => {
+  const handleGenerateWorkflow = async () => {
     setIsGenerating(true)
 
-    setTimeout(() => {
-      // Create project state from formData
+    try {
+      // Build brief and brand DNA from formData
+      const brief = {
+        contentType: formData.contentType,
+        product: formData.product,
+        productDescription: formData.productDescription,
+        audience: formData.audience,
+        visualStyle: formData.visualStyle,
+        duration: 30,
+        priority: formData.priority,
+      }
+
+      const brandDNA = {
+        brandName: formData.brandName || formData.product,
+        tone: formData.brandTone.split(',').map(t => t.trim()),
+        restrictions: formData.restrictions.split(',').map(r => r.trim()),
+      }
+
+      // Step 1: Call Creative Director Agent
+      const creativePlan = await agentsAPI.generateCreativePlan(brief, brandDNA)
+
+      // Step 2: Build Workflow from Creative Plan
+      const workflow = await agentsAPI.buildWorkflow(creativePlan, brandDNA, formData.priority)
+
+      // Step 3: Create Project State
       const newProject = {
         id: `project_${Date.now()}`,
         name: `${formData.product || 'Custom Project'} Campaign`,
+        brief,
+        brandDNA,
+        creativePlan
+      }
+
+      setProject(newProject)
+      loadDemoWorkflow(workflow)
+
+      setIsGenerating(false)
+      navigate('/workflow')
+    } catch (error) {
+      console.error('Error generating workflow:', error)
+
+      // Fallback to demo workflow on error
+      const baseDemo = DEMO_PRESETS[0].workflow
+      const newProject = {
+        id: `project_${Date.now()}`,
+        name: `${formData.product || 'Demo Project'} Campaign`,
         brief: {
           contentType: formData.contentType,
           product: formData.product,
@@ -98,28 +140,11 @@ export default function BriefChatbot({ onComplete }) {
       }
 
       setProject(newProject)
-
-      // Fallback/smart workflow mapping
-      const baseDemo = DEMO_PRESETS[0].workflow
-      loadDemoWorkflow({
-        ...baseDemo,
-        nodes: baseDemo.nodes.map(n => {
-          if (n.id === 'node_brief') {
-            return {
-              ...n,
-              data: {
-                ...n.data,
-                prompt: `${formData.contentType} for ${formData.product || 'Product'}, ${formData.audience}, style: ${formData.visualStyle}`
-              }
-            }
-          }
-          return n
-        })
-      })
+      loadDemoWorkflow(baseDemo)
 
       setIsGenerating(false)
       navigate('/workflow')
-    }, 1200)
+    }
   }
 
   return (

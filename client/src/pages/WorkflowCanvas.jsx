@@ -8,17 +8,31 @@ import ReactFlow, {
   addEdge,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
-import { Sparkles, ArrowLeft, Play, DollarSign, Clock, ShieldCheck, Zap, Plus, X } from 'lucide-react'
+import { Sparkles, ArrowLeft, Play, DollarSign, Clock, ShieldCheck, Zap, Plus, X, Send } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import WorkflowNode from '../components/WorkflowNode'
 import NodeInspector from '../components/NodeInspector'
 import BriefChatbot from '../components/BriefChatbot'
 import useWorkflowStore from '../context/workflowStore'
 import { auraSkinDemoWorkflow } from '../utils/demoData'
+import { agentsAPI } from '../utils/api'
 
 export default function WorkflowCanvas() {
   const navigate = useNavigate()
   const [showBriefModal, setShowBriefModal] = useState(false)
+  const [chatInput, setChatInput] = useState('')
+  const [chatMessages, setChatMessages] = useState([
+    {
+      sender: 'bot',
+      text: 'Workflow generated successfully. All tasks are routed to optimal models based on your priorities and brand guidelines.'
+    },
+    {
+      sender: 'bot',
+      text: 'Available commands: "Make this cheaper", "Check brand rules", "Optimize for speed", or ask me anything about the workflow.'
+    }
+  ])
+  const [isProcessingCommand, setIsProcessingCommand] = useState(false)
+
   const {
     nodes: storeNodes,
     edges: storeEdges,
@@ -26,6 +40,9 @@ export default function WorkflowCanvas() {
     project,
     selectedNode,
     setSelectedNode,
+    setNodes: setStoreNodes,
+    setEdges: setStoreEdges,
+    setMetadata,
     loadDemoWorkflow,
   } = useWorkflowStore()
 
@@ -60,6 +77,51 @@ export default function WorkflowCanvas() {
     },
     [setSelectedNode]
   )
+
+  // Handle chat command submission
+  const handleChatCommand = async () => {
+    if (!chatInput.trim() || isProcessingCommand) return
+
+    const userMessage = chatInput.trim()
+    setChatInput('')
+    setChatMessages(prev => [...prev, { sender: 'user', text: userMessage }])
+    setIsProcessingCommand(true)
+
+    try {
+      // Call Python agent chat command endpoint
+      const currentWorkflow = {
+        nodes: storeNodes,
+        edges: storeEdges,
+        metadata
+      }
+
+      const result = await agentsAPI.chatCommand(
+        userMessage,
+        currentWorkflow,
+        project?.brandDNA || {}
+      )
+
+      // Add bot response
+      setChatMessages(prev => [...prev, { sender: 'bot', text: result.message }])
+
+      // Update workflow if changed
+      if (result.updated_workflow && result.type === 'optimization') {
+        const updatedWorkflow = result.updated_workflow
+        setStoreNodes(updatedWorkflow.nodes)
+        setStoreEdges(updatedWorkflow.edges)
+        setMetadata(updatedWorkflow.metadata)
+      }
+
+      setIsProcessingCommand(false)
+    } catch (error) {
+      console.error('Chat command error:', error)
+      setChatMessages(prev => [...prev, {
+        sender: 'bot',
+        text: '⚠️ Could not process command. Make sure the Python agent service is running on port 8000.'
+      }])
+      setIsProcessingCommand(false)
+    }
+  }
 
   return (
     <div className="h-screen flex flex-col bg-slate-950 text-slate-100 overflow-hidden">
@@ -148,25 +210,46 @@ export default function WorkflowCanvas() {
           </div>
 
           <div className="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
-            <div className="bg-slate-800/60 p-3 rounded-lg border border-slate-700/60 text-slate-300 leading-relaxed">
-              👋 I generated the 6-scene production workflow for <strong>Aura Skin</strong>. All tasks are routed to optimal models based on your brand guidelines.
-            </div>
+            {chatMessages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`${
+                  msg.sender === 'user'
+                    ? 'bg-blue-600/20 border border-blue-500/30 text-slate-200 ml-4'
+                    : 'bg-slate-800/60 border border-slate-700/60 text-slate-300'
+                } p-3 rounded-lg leading-relaxed`}
+              >
+                {msg.text}
+              </div>
+            ))}
 
-            <div className="bg-blue-500/10 border border-blue-500/30 p-3 rounded-lg text-slate-300">
-              <p className="font-semibold text-cyan-400 text-xs mb-1">⚡ Try the Magic Moment:</p>
-              <button className="w-full mt-2 text-left px-2.5 py-1.5 rounded bg-blue-500/20 hover:bg-blue-500/30 text-cyan-300 font-mono text-[11px] border border-blue-500/40 transition-colors flex items-center justify-between">
-                <span>"Make this 30% cheaper"</span>
-                <Zap className="w-3 h-3" />
-              </button>
-            </div>
+            {isProcessingCommand && (
+              <div className="bg-slate-800/60 border border-slate-700/60 p-3 rounded-lg text-slate-400 flex items-center gap-2">
+                <div className="w-3 h-3 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                Processing command...
+              </div>
+            )}
           </div>
 
           <div className="p-4 border-t border-slate-800">
-            <input
-              type="text"
-              placeholder="Ask agent to modify workflow..."
-              className="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleChatCommand()}
+                placeholder='Try: "Make this 30% cheaper"'
+                disabled={isProcessingCommand}
+                className="flex-1 bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 disabled:opacity-50"
+              />
+              <button
+                onClick={handleChatCommand}
+                disabled={isProcessingCommand || !chatInput.trim()}
+                className="p-2 bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
