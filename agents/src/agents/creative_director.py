@@ -7,6 +7,10 @@ import os
 from typing import Dict, Any, Optional
 from groq import Groq
 import json
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 
 class CreativeDirectorAgent:
@@ -84,15 +88,21 @@ Return ONLY valid JSON with this structure:
   "visualDirection": "Camera, lighting, and mood notes"
 }}"""
 
-        response = self.client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {"role": "system", "content": "You are an expert creative director. Return only valid JSON."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.8,
-            max_tokens=1500
-        )
+        # Try Groq's GPT-OSS-120B model as requested; if unavailable, fallback handles it gracefully
+        model_name = "openai/gpt-oss-120b"  # GPT-OSS 120B via Groq
+        try:
+            response = self.client.chat.completions.create(
+                model=model_name,
+                messages=[
+                    {"role": "system", "content": "You are an expert creative director. Return only valid JSON."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.8,
+                max_tokens=1500
+            )
+        except Exception as e:
+            # If model call fails (decommissioned, rate limit, access denied), raise for fallback
+            raise e
 
         content = response.choices[0].message.content.strip()
 

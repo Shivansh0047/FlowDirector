@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"npm run dev:agents\"",
     "dev:client": "npm run dev --prefix client",
     "dev:server": "npm run dev --prefix server",
-    "dev:agents": "cd agents && D:/Coding/AL_ML/ml_env/Scripts/python.exe -m uvicorn src.main:app --reload --port 8000",
+    "dev:agents": "D:/Coding/AL_ML/ml_env/Scripts/python.exe -m uvicorn agents.src.main:app --reload --port 8000",
     "install:all": "npm install && npm install --prefix client && npm install --prefix server",
     "build:client": "npm run build --prefix client"
   },

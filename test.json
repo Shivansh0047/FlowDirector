@@ -1,0 +1,1 @@
+{"workflow": {"nodes": [{"id": 1, "data": {"label": "Product Shot", "type": "image_generation", "estimatedCost": 50}}], "target_reduction_pct": 0.3}}
