@@ -1,25 +1,232 @@
 """
 Creative Director Agent — Generates campaign concepts, storyboards, and scripts from briefs.
-Uses Groq API (Llama 3) for creative text generation.
+Uses Groq API (Llama 3) for creative text generation with smart template fallback.
 """
+
+import os
+from typing import Dict, Any, Optional
+from groq import Groq
+import json
+
 
 class CreativeDirectorAgent:
     def __init__(self):
-        pass
+        self.groq_api_key = os.getenv("GROQ_API_KEY")
+        self.client = Groq(api_key=self.groq_api_key) if self.groq_api_key else None
 
-    def generate_creative_plan(self, brief: dict) -> dict:
+    def generate_creative_plan(self, brief: Dict[str, Any], brand_dna: Dict[str, Any]) -> Dict[str, Any]:
         """
         Transforms a creative brief into structured creative plan.
+
         Args:
             brief: { contentType, product, audience, visualStyle, duration, priority }
+            brand_dna: { brandName, tone, restrictions, colors }
+
         Returns:
-            { concept, hook, scenes: [...], script, visualDirection }
+            {
+                "concept": str,
+                "hook": str,
+                "tagline": str,
+                "scenes": [{"id", "title", "description", "duration", "shot_type"}],
+                "script": str,
+                "visualDirection": str
+            }
         """
-        # TODO: Implement with Groq API
-        return {
-            "concept": "Morning Reset — Skincare Reimagined",
-            "hook": "Your morning routine just changed.",
-            "scenes": [],
-            "script": "",
-            "visualDirection": "Cinematic soft morning light, authentic natural skin texture"
-        }
+
+        # Try Groq API if available
+        if self.client:
+            try:
+                return self._generate_with_groq(brief, brand_dna)
+            except Exception as e:
+                print(f"[Creative Director] Groq API failed, using fallback: {e}")
+                return self._generate_fallback(brief, brand_dna)
+        else:
+            print("[Creative Director] No Groq API key, using smart template fallback")
+            return self._generate_fallback(brief, brand_dna)
+
+    def _generate_with_groq(self, brief: Dict[str, Any], brand_dna: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generates creative plan using Groq's Llama 3.3 70B model.
+        """
+        content_type = brief.get("contentType", "instagram_ad")
+        product = brief.get("product", "Product")
+        audience = brief.get("audience", "General audience")
+        visual_style = brief.get("visualStyle", "cinematic")
+        duration = brief.get("duration", 30)
+        brand_name = brand_dna.get("brandName", product)
+        tone = ", ".join(brand_dna.get("tone", ["premium"]))
+
+        prompt = f"""You are a world-class creative director for {brand_name}. Create a compelling {content_type} campaign.
+
+**Product:** {product}
+**Target Audience:** {audience}
+**Visual Style:** {visual_style}
+**Duration:** {duration} seconds
+**Brand Tone:** {tone}
+
+Generate a structured creative campaign plan in JSON format with:
+1. A memorable campaign concept title
+2. An attention-grabbing hook (opening line)
+3. A powerful tagline
+4. A scene-by-scene breakdown (4-6 scenes for {duration}s)
+5. Full script/voiceover text
+6. Visual direction notes
+
+Return ONLY valid JSON with this structure:
+{{
+  "concept": "Campaign Title",
+  "hook": "Opening hook line",
+  "tagline": "Memorable tagline",
+  "scenes": [
+    {{"id": 1, "title": "Scene Name", "description": "What happens visually", "duration": 5, "shot_type": "close-up/wide/pan"}},
+  ],
+  "script": "Full voiceover script",
+  "visualDirection": "Camera, lighting, and mood notes"
+}}"""
+
+        response = self.client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "You are an expert creative director. Return only valid JSON."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.8,
+            max_tokens=1500
+        )
+
+        content = response.choices[0].message.content.strip()
+
+        # Extract JSON from markdown code blocks if present
+        if "```json" in content:
+            content = content.split("```json")[1].split("```")[0].strip()
+        elif "```" in content:
+            content = content.split("```")[1].split("```")[0].strip()
+
+        return json.loads(content)
+
+    def _generate_fallback(self, brief: Dict[str, Any], brand_dna: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Smart template-based fallback when Groq API is unavailable.
+        Context-aware templates based on content type and product category.
+        """
+        content_type = brief.get("contentType", "instagram_ad")
+        product = brief.get("product", "Product")
+        audience = brief.get("audience", "General audience")
+        visual_style = brief.get("visualStyle", "cinematic")
+        duration = brief.get("duration", 30)
+        brand_name = brand_dna.get("brandName", product)
+
+        # Template selection based on content type
+        if content_type == "instagram_ad":
+            return {
+                "concept": f"{brand_name} — Elevated Everyday",
+                "hook": f"Discover {product}",
+                "tagline": f"Your new essential, redefined.",
+                "scenes": [
+                    {
+                        "id": 1,
+                        "title": "Morning Ritual Hook",
+                        "description": f"Close-up of user in natural morning light, authentic moment",
+                        "duration": 5,
+                        "shot_type": "close-up"
+                    },
+                    {
+                        "id": 2,
+                        "title": "The Problem",
+                        "description": f"Subtle visual showing the need {product} solves",
+                        "duration": 4,
+                        "shot_type": "medium"
+                    },
+                    {
+                        "id": 3,
+                        "title": "Product Hero Reveal",
+                        "description": f"Premium shot of {product} with elegant lighting and packaging detail",
+                        "duration": 6,
+                        "shot_type": "macro"
+                    },
+                    {
+                        "id": 4,
+                        "title": "Application / Usage",
+                        "description": f"User interacting naturally with {product}",
+                        "duration": 5,
+                        "shot_type": "medium"
+                    },
+                    {
+                        "id": 5,
+                        "title": "Transformation / Result",
+                        "description": f"Confident, glowing result after using {product}",
+                        "duration": 5,
+                        "shot_type": "portrait"
+                    },
+                    {
+                        "id": 6,
+                        "title": "CTA & Brand Lock",
+                        "description": f"Final product shot with {brand_name} branding and clear CTA",
+                        "duration": 5,
+                        "shot_type": "product_hero"
+                    }
+                ],
+                "script": f"Your routine just changed. Meet {product}. {brand_name}. Elevated everyday.",
+                "visualDirection": f"{visual_style} lighting, authentic moments, premium product fidelity, {audience} representation"
+            }
+
+        elif content_type == "cinematic_film":
+            return {
+                "concept": f"{brand_name} — Engineering Perfection",
+                "hook": f"Experience {product}. Reimagined.",
+                "tagline": f"Precision meets performance.",
+                "scenes": [
+                    {
+                        "id": 1,
+                        "title": "Epic Reveal",
+                        "description": f"Dramatic reveal of {product} with cinematic lighting and slow motion",
+                        "duration": 8,
+                        "shot_type": "wide_establishing"
+                    },
+                    {
+                        "id": 2,
+                        "title": "Exploded Technical View",
+                        "description": f"3D technical breakdown showing {product} engineering and components",
+                        "duration": 10,
+                        "shot_type": "3d_animation"
+                    },
+                    {
+                        "id": 3,
+                        "title": "Lifestyle Integration",
+                        "description": f"User immersed in environment showcasing {product} in action",
+                        "duration": 12,
+                        "shot_type": "cinematic_lifestyle"
+                    },
+                    {
+                        "id": 4,
+                        "title": "Dynamic Motion Sequence",
+                        "description": f"Speed ramps and orbiting camera around {product} with visual effects",
+                        "duration": 10,
+                        "shot_type": "dynamic_motion"
+                    },
+                    {
+                        "id": 5,
+                        "title": "Signature Tagline Lock",
+                        "description": f"Final hero shot of {product} with {brand_name} brand signature",
+                        "duration": 5,
+                        "shot_type": "product_hero"
+                    }
+                ],
+                "script": f"Silence the noise. Unleash perfection. {product}. {brand_name}.",
+                "visualDirection": f"High-contrast {visual_style} aesthetic, dramatic rim lighting, speed ramps, orbiting camera work, premium finishes"
+            }
+
+        else:  # Generic fallback
+            return {
+                "concept": f"{brand_name} — The New Standard",
+                "hook": f"Introducing {product}",
+                "tagline": f"Better by design.",
+                "scenes": [
+                    {"id": 1, "title": "Hook", "description": f"Opening attention grab", "duration": 5, "shot_type": "close-up"},
+                    {"id": 2, "title": "Product Showcase", "description": f"{product} hero shot", "duration": 8, "shot_type": "product"},
+                    {"id": 3, "title": "Lifestyle", "description": f"User enjoying {product}", "duration": 10, "shot_type": "lifestyle"},
+                    {"id": 4, "title": "CTA", "description": f"Call to action and branding", "duration": 7, "shot_type": "cta"}
+                ],
+                "script": f"Meet {product}. {brand_name}.",
+                "visualDirection": f"{visual_style} style with focus on {audience}"
+            }
