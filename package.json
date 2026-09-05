@@ -1,0 +1,28 @@
+{
+  "name": "flowdirector",
+  "version": "0.1.0",
+  "description": "AI Creative Production Director — from creative brief to model-optimized AI workflow",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"npm run dev:agents\"",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:agents": "cd agents && python -m uvicorn src.main:app --reload --port 8000",
+    "install:all": "npm install && npm install --prefix client && npm install --prefix server && cd agents && pip install -r requirements.txt",
+    "build:client": "npm run build --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "ai",
+    "creative-director",
+    "workflow",
+    "orchestration",
+    "react-flow",
+    "langgraph",
+    "hexcoded"
+  ],
+  "author": "Shivansh",
+  "license": "MIT"
+}
