@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sparkles, Workflow, Shield, Zap } from 'lucide-react'
+import { Sparkles, Workflow, Shield, Zap, X } from 'lucide-react'
+import BriefChatbot from '../components/BriefChatbot'
 
 export default function LandingPage() {
   const navigate = useNavigate()
+  const [showChatbot, setShowChatbot] = useState(false)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
@@ -13,6 +16,21 @@ export default function LandingPage() {
           DEMO PROTOTYPE
         </span>
       </div>
+
+      {/* Chatbot Modal */}
+      {showChatbot && (
+        <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-4xl">
+            <button
+              onClick={() => setShowChatbot(false)}
+              className="absolute -top-12 right-0 p-2 text-slate-400 hover:text-slate-200 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <BriefChatbot />
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <div className="container mx-auto px-6 pt-20 pb-16 text-center">
@@ -70,7 +88,7 @@ export default function LandingPage() {
         {/* CTA */}
         <div className="text-center">
           <button
-            onClick={() => navigate('/workflow')}
+            onClick={() => setShowChatbot(true)}
             className="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
           >
             Try the Demo

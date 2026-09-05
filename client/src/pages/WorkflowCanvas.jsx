@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from 'react'
+import { useEffect, useCallback, useMemo, useState } from 'react'
 import ReactFlow, {
   Background,
   Controls,
@@ -8,19 +8,22 @@ import ReactFlow, {
   addEdge,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
-import { Sparkles, ArrowLeft, Play, DollarSign, Clock, ShieldCheck, Zap } from 'lucide-react'
+import { Sparkles, ArrowLeft, Play, DollarSign, Clock, ShieldCheck, Zap, Plus, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import WorkflowNode from '../components/WorkflowNode'
 import NodeInspector from '../components/NodeInspector'
+import BriefChatbot from '../components/BriefChatbot'
 import useWorkflowStore from '../context/workflowStore'
 import { auraSkinDemoWorkflow } from '../utils/demoData'
 
 export default function WorkflowCanvas() {
   const navigate = useNavigate()
+  const [showBriefModal, setShowBriefModal] = useState(false)
   const {
     nodes: storeNodes,
     edges: storeEdges,
     metadata,
+    project,
     selectedNode,
     setSelectedNode,
     loadDemoWorkflow,
@@ -60,6 +63,21 @@ export default function WorkflowCanvas() {
 
   return (
     <div className="h-screen flex flex-col bg-slate-950 text-slate-100 overflow-hidden">
+      {/* Brief Chatbot Modal */}
+      {showBriefModal && (
+        <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative w-full max-w-4xl">
+            <button
+              onClick={() => setShowBriefModal(false)}
+              className="absolute -top-12 right-0 p-2 text-slate-400 hover:text-slate-200 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <BriefChatbot onComplete={() => setShowBriefModal(false)} />
+          </div>
+        </div>
+      )}
+
       {/* Header Bar */}
       <header className="h-14 border-b border-slate-800 bg-slate-900/60 backdrop-blur px-6 flex items-center justify-between z-10">
         <div className="flex items-center gap-4">
@@ -78,8 +96,15 @@ export default function WorkflowCanvas() {
           </div>
           <span className="text-slate-700">|</span>
           <span className="text-sm font-medium text-slate-300">
-            Aura Skin — Morning Reset
+            {project?.name || 'Aura Skin — Morning Reset'}
           </span>
+          <button
+            onClick={() => setShowBriefModal(true)}
+            className="flex items-center gap-1 text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-cyan-300 border border-slate-700 transition-colors ml-2"
+          >
+            <Plus className="w-3.5 h-3.5 text-cyan-400" />
+            New Brief
+          </button>
         </div>
 
         <div className="flex items-center gap-4">
