@@ -30,20 +30,39 @@ Built as an interactive product prototype for creative professionals (editors, d
 ## ⚙️ What's Live vs. Demo
 
 ### Fully Functional (Real AI/Logic):
-- ✅ **Model Router** — Real multi-factor weighted scoring across 10+ models (Flux, Runway, Kling, ElevenLabs, etc.)
+- ✅ **Model Router** — 43 registered models with weighted scoring (updated: Nano Banana, GPT Image, FLUX 2, Seedream, Kling, Veo 3.1, Seedance, Talking Actors, etc.)
 - ✅ **Brand Guardian** — Pattern-based rule validation with auto-fix suggestions
 - ✅ **Workflow Optimizer** — Cost/speed optimization algorithms (real node swapping & recalculation)
 - ✅ **Workflow Builder** — Dynamic graph construction with routing & brand checks per node
 - ✅ **Creative Director** — Smart context-aware templates (switches to Groq Llama 3 if API key provided)
 
 ### Demo/Placeholder:
-- 📦 Node output images (static placeholders, not real generation)
-- 📦 2 preset projects (Aura Skin & Nova Headphones) for quick demos
+- 📦 Node output images — mock Unsplash photos only; no real image/video/audio generation yet
+- 📦 2 preset projects (Aura Skin & Nova Headphones)
 
 **Everything else is live** — custom briefs trigger real agent orchestration with dynamic workflows.
 
 ---
 
+
+---
+
+## 🔍 What Uses Real AI vs Mock (Current State)
+
+**Real AI / Code:**
+- Creative Director (`gpt-oss-120b` via Groq when key set; smart fallback templates otherwise)
+- Model Router (43-model scoring algorithm — pure Python, no live model call)
+- Brand Guardian (rule-based validation)
+- Workflow Builder / Optimizer (graph construction + cost math)
+- Chat interface (natural-language command routing)
+
+**Mock / Placeholder:**
+- Node output images/videos/audio (mock Unsplash URLs only)
+- No live image/video/audio generation APIs connected yet
+
+> This is a working demo prototype for the HexCoded product-role application.
+
+---
 ## 🏗️ Architecture & Tech Stack
 
 ```
@@ -88,9 +107,20 @@ cp agents/.env.example agents/.env
 npm run dev
 ```
 
-- Frontend: `http://localhost:5173`
+- Frontend: `http://localhost:5177`
 - Node Server: `http://localhost:5000`
 - Python Agent API: `http://localhost:8000`
+
+### Quick Test
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Full orchestration (brief → plan → workflow → brand + router → optimize)
+curl -X POST http://localhost:8000/api/orchestrate \
+  -H 'Content-Type: application/json' \
+  -d '{"brief":{"contentType":"instagram_ad","product":"Demo","audience":"Gen Z"},"brand_dna":{"brandName":"Demo"}}'
+```
 
 ---
 
