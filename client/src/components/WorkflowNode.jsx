@@ -48,10 +48,10 @@ function WorkflowNode({ data, selected }) {
       <div className="flex items-start gap-2 mb-2">
         <Icon className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
-          <div className="font-semibold text-sm text-slate-100 truncate">
+          <div className="font-semibold text-sm text-slate-900 truncate">
             {data.label}
           </div>
-          <div className="text-xs text-slate-500 truncate">
+          <div className="text-xs text-slate-600 truncate">
             {data.type.replace('_', ' ')}
           </div>
         </div>

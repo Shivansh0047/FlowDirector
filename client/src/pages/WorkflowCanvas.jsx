@@ -241,7 +241,7 @@ export default function WorkflowCanvas() {
             >
               <X className="w-6 h-6" />
             </button>
-            <BriefChatbot onComplete={() => setShowBriefModal(false)} />
+            <BriefChatbot open={showBriefModal} onComplete={() => setShowBriefModal(false)} />
           </div>
         </div>
       )}
@@ -263,7 +263,7 @@ export default function WorkflowCanvas() {
             </span>
           </div>
           <span className="text-slate-500">|</span>
-          <span className="text-sm font-medium text-slate-400">
+          <span className="text-sm font-medium text-slate-900">
             {project?.name || 'Aura Skin — Morning Reset'}
           </span>
           <button
