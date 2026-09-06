@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+﻿import { useState, useRef, useEffect } from 'react'
 import { Sparkles, ArrowRight, Check, Zap, Layers, Shield, DollarSign, Gauge, RefreshCw } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import useWorkflowStore from '../context/workflowStore'
@@ -41,7 +41,7 @@ export default function BriefChatbot({ open = false, onClose, onComplete }) {
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
-      text: "👋 Welcome! I'm your AI Creative Director. Let's build your brand-consistent, model-optimized production workflow step-by-step.",
+      text: "ðŸ‘‹ Welcome! I'm your AI Creative Director. Let's build your brand-consistent, model-optimized production workflow step-by-step.",
       step: 1
     }
   ])
@@ -96,11 +96,13 @@ export default function BriefChatbot({ open = false, onClose, onComplete }) {
         restrictions: formData.restrictions.split(',').map(r => r.trim()),
       }
 
-      // Step 1: Call Creative Director Agent
-      const creativePlan = await agentsAPI.generateCreativePlan(brief, brandDNA)
-
-      // Step 2: Build Workflow from Creative Plan
-      const workflow = await agentsAPI.buildWorkflow(creativePlan, brandDNA, formData.priority)
+      // Full orchestration: brief -> gpt-oss-120b plan -> router selects model -> brand guard -> optimizer
+      const orchestration = await agentsAPI.orchestrate(brief, brandDNA, formData.priority)
+      const creativePlan = orchestration.trace.step_1_creative_plan
+      const workflow = orchestration.trace.step_2_workflow
+      const brandCheck = orchestration.trace.step_2_brand_check
+      const routed = orchestration.trace.step_2_model_routing
+      const optimized = orchestration.trace.step_3_optimized
 
       // Step 3: Create Project State
       const newProject = {
@@ -111,8 +113,8 @@ export default function BriefChatbot({ open = false, onClose, onComplete }) {
         creativePlan
       }
 
-      setProject(newProject)
-      loadDemoWorkflow(workflow)
+      setProject({ ...newProject, routing: routed, brandCheck, optimized })
+      loadDemoWorkflow(optimized ? optimized.optimized_workflow || workflow : workflow)
 
       setIsGenerating(false)
       navigate('/workflow')
@@ -180,7 +182,7 @@ export default function BriefChatbot({ open = false, onClose, onComplete }) {
               title={preset.tagline}
             >
               <Zap className="w-3 h-3 text-cyan-400" />
-              {preset.name.split('—')[0].trim()}
+              {preset.name.split('â€”')[0].trim()}
             </button>
           ))}
         </div>
@@ -269,7 +271,7 @@ export default function BriefChatbot({ open = false, onClose, onComplete }) {
                 onClick={() => handleNextStep(
                   3,
                   `Awesome! "${formData.product}" sounds compelling. Who is your primary target audience?`,
-                  `Product: ${formData.product} — ${formData.productDescription}`
+                  `Product: ${formData.product} â€” ${formData.productDescription}`
                 )}
                 className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 disabled:opacity-50 text-white font-medium rounded-lg text-xs flex items-center gap-2"
               >

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+﻿from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
@@ -137,6 +137,41 @@ def optimize_cost(req: OptimizeCostRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+
+class OrchestrateRequest(BaseModel):
+    brief: Dict[str, Any]
+    brand_dna: Dict[str, Any] = Field(default_factory=dict)
+    priority: Optional[Dict[str, float]] = Field(default_factory=lambda: {"quality": 0.6, "cost": 0.2, "speed": 0.2})
+
+
+@app.post("/api/orchestrate")
+def orchestrate_full_chain(req: OrchestrateRequest):
+    trace = {}
+    trace["step_1_creative_plan"] = creative_director.generate_creative_plan(req.brief, req.brand_dna or {})
+    trace["step_2_workflow"] = workflow_builder.build_workflow(
+        trace["step_1_creative_plan"],
+        req.brand_dna or {},
+        req.priority or {"quality": 0.6, "cost": 0.2, "speed": 0.2}
+    )
+    brand_issues = []
+    for node in trace["step_2_workflow"].get("nodes", []):
+        prompt_text = node.get("data", {}).get("prompt", "")
+        if prompt_text:
+            check = brand_guardian.check_prompt(prompt_text, req.brand_dna or {})
+            if not check["passed"]:
+                brand_issues.append({"node": node.get("id"), "violations": check.get("violations", [])})
+    trace["step_2_brand_check"] = {"passed": len(brand_issues) == 0, "issues": brand_issues}
+    routed_models = {}
+    for node in trace["step_2_workflow"].get("nodes", []):
+        task_type = node.get("data", {}).get("taskType", "image_generation")
+        score_result = model_router.route_node(task_type, req.priority or {"quality": 0.6, "cost": 0.2, "speed": 0.2})
+        routed_models[node.get("id")] = score_result.get("best_model", score_result.get("scored", {}))
+    trace["step_2_model_routing"] = routed_models
+    trace["step_3_optimized"] = optimizer.optimize_for_cost(
+        trace["step_2_workflow"], target_reduction_pct=0.30, preserve_hero_shots=True
+    )
+    return {"status": "success", "chain": "brief -> creative_director -> workflow_builder -> brand_guardian + model_router -> optimizer", "trace": trace}
+
 @app.post("/api/chat-command")
 def handle_chat_command(req: ChatCommandRequest):
     """
@@ -177,10 +212,10 @@ def handle_chat_command(req: ChatCommandRequest):
             "type": "optimization",
             "action": action,
             "message": message or (
-                f"⚡ **Workflow optimized for lower cost!**\n\n"
-                f"• **Cost:** ${opt_result['cost_before']:.2f} → ${opt_result['cost_after']:.2f} "
+                f"âš¡ **Workflow optimized for lower cost!**\n\n"
+                f"â€¢ **Cost:** ${opt_result['cost_before']:.2f} â†’ ${opt_result['cost_after']:.2f} "
                 f"({opt_result['reduction_pct']:.1f}% reduction)\n"
-                f"• **Quality impact:** {opt_result['quality_impact']}\n\n"
+                f"â€¢ **Quality impact:** {opt_result['quality_impact']}\n\n"
                 f"**Changes applied:**\n" +
                 "\n".join(f"- {c}" for c in opt_result['changes'])
             ),
@@ -197,9 +232,9 @@ def handle_chat_command(req: ChatCommandRequest):
             "type": "optimization",
             "action": action,
             "message": message or (
-                f"⚡ **Workflow rebalanced for speed!**\n\n"
-                f"• **Cost:** ${opt_result['cost_before']:.2f} → ${opt_result['cost_after']:.2f}\n"
-                f"• **Quality impact:** {opt_result['quality_impact']}\n\n"
+                f"âš¡ **Workflow rebalanced for speed!**\n\n"
+                f"â€¢ **Cost:** ${opt_result['cost_before']:.2f} â†’ ${opt_result['cost_after']:.2f}\n"
+                f"â€¢ **Quality impact:** {opt_result['quality_impact']}\n\n"
                 f"**Changes applied:**\n" +
                 "\n".join(f"- {c}" for c in opt_result['changes'])
             ),
@@ -213,12 +248,12 @@ def handle_chat_command(req: ChatCommandRequest):
             if prompt:
                 check = brand_guardian.check_prompt(prompt, brand_dna)
                 if not check["passed"]:
-                    issues.append(f"• **{node['data']['label']}**: {check['violations'][0]['rule']}")
+                    issues.append(f"â€¢ **{node['data']['label']}**: {check['violations'][0]['rule']}")
 
         if issues:
-            default_msg = "⚠ **Brand Guardian detected potential conflicts:**\n\n" + "\n".join(issues)
+            default_msg = "âš  **Brand Guardian detected potential conflicts:**\n\n" + "\n".join(issues)
         else:
-            default_msg = "✓ **All nodes passed Brand DNA consistency checks!**"
+            default_msg = "âœ“ **All nodes passed Brand DNA consistency checks!**"
 
         return {
             "status": "success",
@@ -228,7 +263,7 @@ def handle_chat_command(req: ChatCommandRequest):
             "updated_workflow": workflow,
         }
 
-    # action == "chat" — pure conversational reply, no workflow change
+    # action == "chat" â€” pure conversational reply, no workflow change
     return {
         "status": "success",
         "type": "chat",

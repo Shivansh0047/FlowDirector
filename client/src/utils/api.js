@@ -49,6 +49,16 @@ export const agentsAPI = {
     return response.data
   },
 
+  // Full orchestration chain (brief → plan → workflow → brand + router → optimize)
+  orchestrate: async (brief, brandDNA, priority) => {
+    const response = await axios.post(`${AGENTS_API_BASE}/api/orchestrate`, {
+      brief,
+      brand_dna: brandDNA,
+      priority: priority || { quality: 0.6, cost: 0.2, speed: 0.2 }
+    })
+    return response.data
+  },
+
   // Handle natural language chat commands
   chatCommand: async (command, currentWorkflow, brandDNA) => {
     const response = await axios.post(`${AGENTS_API_BASE}/api/chat-command`, {
