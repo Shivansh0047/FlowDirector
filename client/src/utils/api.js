@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const AGENTS_API_BASE = import.meta.env.VITE_AGENTS_API_URL || (import.meta.env.PROD ? 'https://flowdirector-agents.onrender.com' : 'http://localhost:8000')
+const AGENTS_API_BASE = import.meta.env.VITE_AGENTS_API_URL || (import.meta.env.PROD ? 'https://flowdirector.onrender.com' : 'http://localhost:8000')
 const SERVER_API_BASE = import.meta.env.VITE_SERVER_API_URL || (import.meta.env.PROD ? 'https://flowdirector-server.onrender.com' : 'http://localhost:5000')
 
 // Python Agents Service (FastAPI)
