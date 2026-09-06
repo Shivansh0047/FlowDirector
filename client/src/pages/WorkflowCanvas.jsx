@@ -247,11 +247,11 @@ export default function WorkflowCanvas() {
       )}
 
       {/* Header Bar */}
-      <header className="h-14 border-b border-slate-700 bg-white/80 backdrop-blur px-6 flex items-center justify-between z-10">
-        <div className="flex items-center gap-4 flex-nowrap">
+      <header className="h-14 border-b border-slate-200 bg-white/90 backdrop-blur px-4 lg:px-6 flex items-center justify-between gap-3 z-10">
+        <div className="flex min-w-0 flex-1 items-center gap-2 lg:gap-3 flex-nowrap">
           <button
             onClick={() => navigate('/')}
-            className="p-1.5 hover:bg-slate-700 rounded-lg text-slate-600 hover:text-slate-900 transition-colors"
+            className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-900 transition-colors shrink-0"
             title="Back to Landing"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -263,34 +263,34 @@ export default function WorkflowCanvas() {
             </span>
           </div>
           <span className="text-slate-500">|</span>
-          <span className="text-sm font-medium text-slate-900">
+          <span className="text-sm font-medium text-slate-900 truncate whitespace-nowrap min-w-0 max-w-[220px] lg:max-w-[320px]">
             {project?.name || 'Aura Skin — Morning Reset'}
           </span>
           <button
             onClick={() => setShowBriefModal(true)}
-            className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-600 hover:text-cyan-300 border border-slate-600 transition-colors ml-1 whitespace-nowrap shrink-0"
+            className="flex items-center gap-1 text-[10px] px-2 py-1 rounded bg-white text-slate-700 hover:text-cyan-700 hover:bg-cyan-50 border border-slate-300 transition-colors ml-1 whitespace-nowrap shrink-0"
           >
             <Plus className="w-3.5 h-3.5 text-cyan-400" />
             New Brief
           </button>
         </div>
 
-        <div className="flex items-center gap-4 flex-nowrap">
+        <div className="flex shrink-0 items-center gap-2 lg:gap-3 flex-nowrap">
           {/* Metrics summary */}
-          <div className="flex items-center gap-4 text-xs text-slate-400 bg-emerald-50/60 px-4 py-2 rounded-lg border border-slate-600/50">
+          <div className="flex shrink-0 items-center gap-3 text-xs text-slate-600 bg-emerald-50/80 px-3 py-2 rounded-lg border border-emerald-200">
             <span className="flex items-center gap-1.5">
               <DollarSign className="w-4 h-4 text-emerald-400" />
-              Est. Cost: <strong className="text-slate-200">${metadata?.totalCost?.toFixed(2) || '1.84'}</strong>
+              Est. Cost: <strong className="text-slate-900">${metadata?.totalCost?.toFixed(2) || '1.84'}</strong>
             </span>
-            <span className="text-slate-500">•</span>
+            <span className="text-slate-300">•</span>
             <span className="flex items-center gap-1.5">
               <Clock className="w-4 h-4 text-primary" />
-              Est. Time: <strong className="text-slate-200">{metadata?.totalTime || '260'}s</strong>
+              Est. Time: <strong className="text-slate-900">{metadata?.totalTime || '260'}s</strong>
             </span>
-            <span className="text-slate-500">•</span>
+            <span className="text-slate-300">•</span>
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-cyan-400" />
-              Quality: <strong className="text-slate-200">{metadata?.qualityScore || '9.1'}/10</strong>
+              Quality: <strong className="text-slate-900">{metadata?.qualityScore || '9.1'}/10</strong>
             </span>
           </div>
 
@@ -305,7 +305,7 @@ export default function WorkflowCanvas() {
           <button
             onClick={handleOptimizeCost}
             disabled={isOptimizingCost}
-            className="flex items-center gap-2 px-3 py-2 bg-amber-500/10 hover:bg-amber-500/20 disabled:opacity-40 text-amber-300 font-medium rounded-lg text-sm transition-all border border-amber-500/20 active:scale-95"
+            className="flex items-center gap-2 px-3 py-2 bg-amber-50 hover:bg-amber-100 disabled:opacity-40 text-amber-700 font-medium rounded-lg text-sm transition-all border border-amber-200 active:scale-95 whitespace-nowrap"
           >
             <DollarSign className="w-4 h-4" />
             {isOptimizingCost ? 'Optimizing...' : 'Make Cheaper'}
@@ -313,7 +313,7 @@ export default function WorkflowCanvas() {
           <button
             onClick={handleOptimizeSpeed}
             disabled={isOptimizingSpeed}
-            className="flex items-center gap-2 px-3 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 disabled:opacity-40 text-cyan-300 font-medium rounded-lg text-sm transition-all border border-cyan-500/20 active:scale-95"
+            className="flex items-center gap-2 px-3 py-2 bg-cyan-50 hover:bg-cyan-100 disabled:opacity-40 text-cyan-700 font-medium rounded-lg text-sm transition-all border border-cyan-200 active:scale-95 whitespace-nowrap"
           >
             <Clock className="w-4 h-4" />
             {isOptimizingSpeed ? 'Optimizing...' : 'Make Faster'}
@@ -321,7 +321,7 @@ export default function WorkflowCanvas() {
           <button
             onClick={handleCheckBrand}
             disabled={isCheckingBrand}
-            className="flex items-center gap-2 px-3 py-2 bg-teal-500/10 hover:bg-teal-500/20 disabled:opacity-40 text-teal-300 font-medium rounded-lg text-sm transition-all border border-teal-500/20 active:scale-95"
+            className="flex items-center gap-2 px-3 py-2 bg-teal-50 hover:bg-teal-100 disabled:opacity-40 text-teal-700 font-medium rounded-lg text-sm transition-all border border-teal-200 active:scale-95 whitespace-nowrap"
           >
             <ShieldCheck className="w-4 h-4" />
             {isCheckingBrand ? 'Checking...' : 'Brand Check'}
