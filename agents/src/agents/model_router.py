@@ -7,6 +7,22 @@ from typing import Dict, Any, List, Optional
 
 # Comprehensive Model Registry with capability benchmarks (0 to 10 scale)
 MODEL_REGISTRY = {
+    "nano_banana_pro": {"id":"nano_banana_pro","name":"Nano Banana Pro","provider":"Nano","type":"image_generation","quality":9.2,"cost":0.12,"speed":7.5,"latency_sec":12,"realism":9.3,"styles":["pro","high_fidelity"],"best_for":"Pro image generation"},
+    "nano_banana_2": {"id":"nano_banana_2","name":"Nano Banana 2","provider":"Nano","type":"image_generation","quality":9.0,"cost":0.10,"speed":8.0,"latency_sec":10,"styles":["general"],"best_for":"General high-quality images"},
+    "nano_banana_2_lite": {"id":"nano_banana_2_lite","name":"Nano Banana 2 Lite","provider":"Nano","type":"image_generation","quality":8.2,"cost":0.05,"speed":9.5,"latency_sec":6,"styles":["lite","fast"],"best_for":"Quick lightweight images"},
+    "gpt_image_2": {"id":"gpt_image_2","name":"GPT Image 2","provider":"OpenAI","type":"image_generation","quality":9.5,"cost":0.15,"speed":6.5,"latency_sec":15,"realism":9.6,"styles":["photoreal","creative"],"best_for":"Photoreal creative images"},
+    "gpt_image_1_mini": {"id":"gpt_image_1_mini","name":"GPT Image 1 Mini","provider":"OpenAI","type":"image_generation","quality":8.4,"cost":0.06,"speed":9.2,"latency_sec":7,"styles":["mini","fast"],"best_for":"Fast mini images"},
+    "flux_2_max": {"id":"flux_2_max","name":"FLUX.2 Max","provider":"Black Forest Labs","type":"image_generation","quality":9.7,"cost":0.09,"speed":6.0,"latency_sec":18,"realism":9.9,"styles":["max","premium"],"best_for":"Maximum quality image"},
+    "flux_2_pro": {"id":"flux_2_pro","name":"FLUX.2 Pro","provider":"Black Forest Labs","type":"image_generation","quality":9.4,"cost":0.07,"speed":7.2,"latency_sec":14,"realism":9.6,"styles":["pro"],"best_for":"Pro image generation"},
+    "flux_2_klein_4b": {"id":"flux_2_klein_4b","name":"FLUX.2 Klein 4B","provider":"Black Forest Labs","type":"image_generation","quality":8.8,"cost":0.04,"speed":8.5,"latency_sec":9,"styles":["small","fast"],"best_for":"Small fast images"},
+    "seedream_5_0_pro": {"id":"seedream_5_0_pro","name":"Seedream 5.0 Pro","provider":"ByteDance","type":"image_generation","quality":9.3,"cost":0.11,"speed":7.0,"latency_sec":13,"realism":9.4,"styles":["pro"],"best_for":"Pro image generation"},
+    "seedream_4_5": {"id":"seedream_4_5","name":"Seedream 4.5","provider":"ByteDance","type":"image_generation","quality":8.5,"cost":0.08,"speed":8.0,"latency_sec":11,"styles":["general"],"best_for":"General image generation"},
+    "recraft_4_1": {"id":"recraft_4_1","name":"Recraft 4.1","provider":"Recraft","type":"image_generation","quality":9.1,"cost":0.13,"speed":6.8,"latency_sec":16,"styles":["creative","artistic"],"best_for":"Creative artistic images"},
+    "kling_omni_edit": {"id":"kling_omni_edit","name":"Kling Omni-Edit","provider":"Kuaishou","type":"edit_model","quality":9.0,"cost":0.25,"speed":7.0,"latency_sec":30,"styles":["edit","omni"],"best_for":"Omni image/video editing"},
+    "kling_motion_control": {"id":"kling_motion_control","name":"Kling Motion Control","provider":"Kuaishou","type":"edit_model","quality":9.3,"cost":0.30,"speed":6.5,"latency_sec":35,"styles":["motion","control"],"best_for":"Precise motion-controlled edits"},
+    "gemini_omni_flash": {"id":"gemini_omni_flash","name":"Gemini Omni Flash","provider":"Google","type":"edit_model","quality":8.7,"cost":0.20,"speed":7.8,"latency_sec":25,"styles":["flash","fast"],"best_for":"Fast flash edits"},
+    "talking_actors": {"id":"talking_actors","name":"Talking Actors","provider":"HexCoded","type":"video_generation","quality":8.9,"cost":0.25,"speed":7.0,"latency_sec":40,"styles":["actor","script","multilingual"],"best_for":"AI actor speaking scripted video in 70+ languages","note":"Pick actor, type script, generate. Supports AI twins and licensed actors."},
+
     # --- Image Generation Models ---
     "flux_pro": {
         "id": "flux_pro",
@@ -108,6 +124,23 @@ MODEL_REGISTRY = {
         "styles": ["fast_motion", "environment", "concept"],
         "best_for": "Cost-effective scene backgrounds, rapid motion"
     },
+    "seedance_2_5": {"id":"seedance_2_5","name":"Seedance 2.5","provider":"ByteDance","type":"video_generation","quality":9.3,"cost":0.45,"speed":6.5,"latency_sec":55,"motion_smoothness":9.1,"temporal_consistency":9.2,"styles":["cinematic","dynamic"],"best_for":"High-fidelity cinematic video"},
+    "seedance_2_0": {"id":"seedance_2_0","name":"Seedance 2.0","provider":"ByteDance","type":"video_generation","quality":8.9,"cost":0.30,"speed":7.5,"latency_sec":42,"styles":["cinematic"],"best_for":"Balanced quality-speed video"},
+    "seedance_2_fast": {"id":"seedance_2_fast","name":"Seedance 2 Fast","provider":"ByteDance","type":"video_generation","quality":8.5,"cost":0.15,"speed":9.2,"latency_sec":18,"styles":["fast","social"],"best_for":"Quick social video"},
+    "seedance_2_mini": {"id":"seedance_2_mini","name":"Seedance 2 Mini","provider":"ByteDance","type":"video_generation","quality":7.8,"cost":0.08,"speed":9.8,"latency_sec":10,"styles":["mini","fast"],"best_for":"Ultra-fast low-cost previews"},
+    "kling_3_0": {"id":"kling_3_0","name":"Kling 3.0","provider":"Kuaishou","type":"video_generation","quality":9.5,"cost":0.50,"speed":6.0,"latency_sec":60,"motion_smoothness":9.5,"temporal_consistency":9.4,"styles":["3d_rotation","physics"],"best_for":"Complex 3D motion, human action"},
+    "kling_3_0_turbo": {"id":"kling_3_0_turbo","name":"Kling 3.0 Turbo","provider":"Kuaishou","type":"video_generation","quality":9.2,"cost":0.35,"speed":7.8,"latency_sec":30,"styles":["fast","dynamic"],"best_for":"Fast high-quality video"},
+    "veo_3_1": {"id":"veo_3_1","name":"Veo 3.1","provider":"Google","type":"video_generation","quality":9.4,"cost":0.40,"speed":6.8,"latency_sec":45,"styles":["cinematic","photoreal"],"best_for":"Cinematic photoreal video"},
+    "veo_3_1_fast": {"id":"veo_3_1_fast","name":"Veo 3.1 Fast","provider":"Google","type":"video_generation","quality":9.0,"cost":0.25,"speed":8.2,"latency_sec":28,"styles":["fast"],"best_for":"Quick cinematic drafts"},
+    "veo_3_1_lite": {"id":"veo_3_1_lite","name":"Veo 3.1 Lite","provider":"Google","type":"video_generation","quality":8.3,"cost":0.12,"speed":9.0,"latency_sec":15,"styles":["lite","fast"],"best_for":"Low-cost previews"},
+    "grok_imagine_1_5": {"id":"grok_imagine_1_5","name":"Grok Imagine 1.5","provider":"xAI","type":"video_generation","quality":8.6,"cost":0.18,"speed":7.0,"latency_sec":35,"styles":["imaginative","artistic"],"best_for":"Creative artistic video"},
+    "hailuo_2_3": {"id":"hailuo_2_3","name":"Hailuo 2.3","provider":"MiniMax","type":"video_generation","quality":8.8,"cost":0.22,"speed":7.5,"latency_sec":32,"styles":["natural","authentic"],"best_for":"Natural authentic video"},
+    "minimax_h3": {"id":"minimax_h3","name":"MiniMax H3","provider":"MiniMax","type":"video_generation","quality":9.0,"cost":0.30,"speed":7.0,"latency_sec":40,"styles":["high_fidelity"],"best_for":"High-fidelity video"},
+    "wan_2_7": {"id":"wan_2_7","name":"Wan 2.7","provider":"Alibaba","type":"video_generation","quality":8.7,"cost":0.20,"speed":7.8,"latency_sec":30,"styles":["general"],"best_for":"General purpose video"},
+    "wan_2_6": {"id":"wan_2_6","name":"Wan 2.6","provider":"Alibaba","type":"video_generation","quality":8.2,"cost":0.15,"speed":8.5,"latency_sec":22,"styles":["general"],"best_for":"Fast general video"},
+    "vidu_q3_turbo": {"id":"vidu_q3_turbo","name":"Vidu Q3-Turbo","provider":"Vidu","type":"video_generation","quality":8.9,"cost":0.28,"speed":7.2,"latency_sec":38,"styles":["turbo"],"best_for":"Turbo video generation"},
+    "ltx_2_3_fast": {"id":"ltx_2_3_fast","name":"LTX-2.3 Fast","provider":"Lightricks","type":"video_generation","quality":8.4,"cost":0.10,"speed":9.5,"latency_sec":12,"styles":["fast"],"best_for":"Ultra-fast low-cost video"},
+    "happyhorse_1_1": {"id":"happyhorse_1_1","name":"HappyHorse 1.1","provider":"HappyHorse","type":"video_generation","quality":7.5,"cost":0.05,"speed":9.9,"latency_sec":8,"styles":["fast","minimal"],"best_for":"Minimal fast previews"},
 
     # --- Audio / Voiceover Models ---
     "elevenlabs_v2": {
