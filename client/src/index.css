@@ -2,11 +2,225 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ChronoTask-inspired design system */
+
 :root {
-  color-scheme: dark;
+  /* Color palette - inspired by professional SaaS with timeline/chronology theme */
+  --primary: #2563eb; /* blue-600 */
+  --primary-light: #3b82f6; /* blue-500 */
+  --primary-dark: #1d4ed8; /* blue-700 */
+  --secondary: #0f766e; /* teal-600 */
+  --accent: #10b981; /* emerald-500 */
+  --warning: #f59e0b; /* amber-500 */
+  --error: #ef4444; /* red-500 */
+
+  /* Neutrals */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --slate-950: #020617;
+
+  /* Timeline/chrono specific */
+  --timeline-line: #e2e8f0;
+  --timeline-dot-primary: #2563eb;
+  --timeline-dot-secondary: #64748b;
+
+  /* Transition */
+  --transition-speed: 0.3s;
+  --border-radius: 0.5rem;
+  --border-radius-lg: 0.75rem;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
 }
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Dark mode adjustments */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --slate-50: #0f172a;
+      --slate-100: #1e293b;
+      --slate-200: #334155;
+      --slate-300: #475569;
+      --slate-400: #64748b;
+      --slate-500: #94a3b8;
+      --slate-600: #cbd5e1;
+      --slate-700: #e2e8f0;
+      --slate-800: #f1f5f9;
+      --slate-900: #f8fafc;
+      --slate-950: #ffffff;
+    }
+
+    body {
+      @apply bg-slate-950 text-slate-50;
+    }
+  }
+}
+
+@layer components {
+  /* Button variants */
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200 shadow hover:shadow-md transform hover:-translate-y-0.5;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-200 text-slate-800 px-6 py-3 rounded-lg font-medium hover:bg-slate-300 transition-colors duration-200 hover:shadow-sm;
+  }
+
+  .btn-outline {
+    @apply border border-slate-300 text-slate-800 px-6 py-3 rounded-lg font-medium hover:bg-slate-50 transition-colors duration-200 hover:shadow-sm;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-600 transition-colors duration-200 shadow hover:shadow-md;
+  }
+
+  /* Card variants */
+  .card {
+    @apply bg-white dark:bg-slate-900 rounded-lg shadow border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow duration-200;
+  }
+
+  .card-elevated {
+    @apply bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-shadow duration-200;
+  }
+
+  .card-hover {
+    @apply bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200;
+  }
+
+  /* Input variants */
+  .input {
+    @apply w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500;
+  }
+
+  .textarea {
+    @apply w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 min-h-[100px] resize-y bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500;
+  }
+
+  /* Timeline/chrono specific components */
+  .timeline {
+    @apply relative pl-4 mb-8;
+  }
+
+  .timeline::before {
+    content: '';
+    @apply absolute left-0 top-0 h-full w-0.5 bg-timeline-line;
+  }
+
+  .timeline-item {
+    @apply relative mb-8 last:mb-0;
+  }
+
+  .timeline-dot {
+    @apply absolute left-0 top-2.5 -ml-2.5 h-4 w-4 rounded-full bg-primary border-2 border-white dark:border-slate-950 shadow;
+  }
+
+  .timeline-content {
+    @apply ml-6;
+  }
+
+  .timeline-date {
+    @apply text-xs text-slate-500 dark:text-slate-400 mb-1 font-medium;
+  }
+
+  .timeline-title {
+    @apply font-semibold text-slate-900 dark:text-slate-50 mb-1;
+  }
+
+  .timeline-description {
+    @apply text-slate-600 dark:text-slate-300 text-sm;
+  }
+
+  /* Section variants */
+  .section {
+    @apply py-16;
+  }
+
+  .section-dark {
+    @apply bg-slate-50 dark:bg-slate-950;
+  }
+
+  .section-light {
+    @apply bg-white dark:bg-slate-900;
+  }
+
+  .section-gradient {
+    @apply bg-gradient-to-br from-slate-50 via-slate-100 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-800;
+  }
+
+  /* Hero section */
+  .hero {
+    @apply relative overflow-hidden;
+  }
+
+  .hero-background {
+    @apply absolute inset-0 -z-10;
+  }
+
+  /* Animations */
+  .animate-fade-in {
+    animation: fadeIn var(--transition-speed) ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--transition-speed) ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn var(--transition-speed) ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Glassmorphism effect */
+  .glass {
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-white/20 dark:border-slate-600/20;
+  }
+
+  /* Focus rings */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
 }

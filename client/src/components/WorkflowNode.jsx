@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { Handle, Position } from 'reactflow'
-import { Sparkles, Image, Video, Mic, CheckCircle, Clock, AlertCircle } from 'lucide-react'
+import { Sparkles, Image, Video, Mic, CheckCircle, Clock, AlertCircle, Zap, Shield } from 'lucide-react'
 
 // Node type to icon mapping
 const NODE_ICONS = {
@@ -10,12 +10,13 @@ const NODE_ICONS = {
   video_generation: Video,
   audio_generation: Mic,
   export: CheckCircle,
+  brand_check: Shield,
 }
 
 // Status color mapping
 const STATUS_COLORS = {
   draft: 'border-slate-600 bg-slate-800/50',
-  ready: 'border-blue-500 bg-blue-500/10',
+  ready: 'border-primary bg-primary/10',
   running: 'border-cyan-500 bg-cyan-500/10',
   completed: 'border-emerald-500 bg-emerald-500/10',
   failed: 'border-red-500 bg-red-500/10',
@@ -31,7 +32,7 @@ function WorkflowNode({ data, selected }) {
         min-w-[200px] rounded-lg border-2 p-3 shadow-lg backdrop-blur
         transition-all
         ${statusColor}
-        ${selected ? 'ring-2 ring-cyan-400 ring-offset-2 ring-offset-slate-950' : ''}
+        ${selected ? 'ring-2 ring-primary ring-offset-2 ring-offset-slate-950' : ''}
       `}
     >
       {/* Input handle */}
@@ -39,13 +40,13 @@ function WorkflowNode({ data, selected }) {
         <Handle
           type="target"
           position={Position.Top}
-          className="!bg-cyan-500 !w-3 !h-3 !border-2 !border-slate-900"
+          className="!bg-primary !w-3 !h-3 !border-2 !border-slate-900"
         />
       )}
 
       {/* Node header */}
       <div className="flex items-start gap-2 mb-2">
-        <Icon className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+        <Icon className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-sm text-slate-100 truncate">
             {data.label}
@@ -60,7 +61,7 @@ function WorkflowNode({ data, selected }) {
       {data.model && (
         <div className="text-xs text-slate-400 mb-2 flex items-center gap-1.5">
           <span className="text-slate-500">Model:</span>
-          <span className="font-mono text-cyan-400 truncate">{data.model.name}</span>
+          <span className="font-mono text-primary truncate">{data.model.name}</span>
         </div>
       )}
 
@@ -81,6 +82,14 @@ function WorkflowNode({ data, selected }) {
         </div>
       )}
 
+      {/* Brand check indicator */}
+      {data.brandCheck && (
+        <div className="text-xs text-cyan-400 mb-2 flex items-center gap-1.5">
+          <Zap className="w-3 h-3" />
+          Brand: {data.brandCheck.score}% match
+        </div>
+      )}
+
       {/* Status badge */}
       <div className="mt-2 pt-2 border-t border-slate-700/50">
         <StatusBadge status={data.status} />
@@ -91,7 +100,7 @@ function WorkflowNode({ data, selected }) {
         <Handle
           type="source"
           position={Position.Bottom}
-          className="!bg-cyan-500 !w-3 !h-3 !border-2 !border-slate-900"
+          className="!bg-primary !w-3 !h-3 !border-2 !border-slate-900"
         />
       )}
     </div>
@@ -101,7 +110,7 @@ function WorkflowNode({ data, selected }) {
 function StatusBadge({ status }) {
   const config = {
     draft: { label: 'Draft', color: 'text-slate-400' },
-    ready: { label: 'Ready', color: 'text-blue-400' },
+    ready: { label: 'Ready', color: 'text-primary' },
     running: { label: 'Running', color: 'text-cyan-400' },
     completed: { label: 'Completed', color: 'text-emerald-400' },
     failed: { label: 'Failed', color: 'text-red-400' },

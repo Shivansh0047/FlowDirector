@@ -1,10 +1,17 @@
-import { useState } from 'react'
-import { X, DollarSign, Clock, Shield, Sparkles, CheckCircle, AlertTriangle } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { X, DollarSign, Clock, Shield, Sparkles, CheckCircle, AlertTriangle, Zap } from 'lucide-react'
 import useWorkflowStore from '../context/workflowStore'
 
 export default function NodeInspector() {
   const { selectedNode, setSelectedNode, updateNode } = useWorkflowStore()
   const [prompt, setPrompt] = useState(selectedNode?.data?.prompt || '')
+
+  // Keep prompt in sync with selectedNode
+  useEffect(() => {
+    if (selectedNode?.data?.prompt !== undefined) {
+      setPrompt(selectedNode.data.prompt)
+    }
+  }, [selectedNode])
 
   if (!selectedNode) {
     return (
@@ -21,14 +28,14 @@ export default function NodeInspector() {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+      <div className="p-4 border-b border-slate-700 flex items-center justify-between">
         <div>
           <h3 className="font-semibold text-sm text-slate-100">{data.label}</h3>
           <p className="text-xs text-slate-500 capitalize">{data.type?.replace('_', ' ')}</p>
         </div>
         <button
           onClick={() => setSelectedNode(null)}
-          className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200"
+          className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-slate-200"
         >
           <X className="w-4 h-4" />
         </button>
@@ -42,16 +49,17 @@ export default function NodeInspector() {
             <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
               Selected Model
             </label>
-            <div className="bg-slate-800/60 border border-slate-700 rounded-lg p-3">
+            <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-mono text-sm font-medium text-cyan-400">
+                <span className="font-mono text-sm font-medium text-primary">
                   {data.model.name}
                 </span>
                 <span className="text-xs text-slate-500">Provider: {data.model.provider || 'AI'}</span>
               </div>
               {data.modelReason && (
-                <p className="text-xs text-slate-400 mt-2 bg-slate-900/50 p-2 rounded border border-slate-800">
-                  💡 <strong>Router explanation:</strong> {data.modelReason}
+                <p className="text-xs text-slate-400 mt-2 bg-slate-800/50 p-2 rounded border border-slate-700">
+                  <Zap className="w-3 h-3 inline-block mr-1 text-primary" />
+                  <strong>Router explanation:</strong> {data.modelReason}
                 </p>
               )}
             </div>
@@ -64,7 +72,7 @@ export default function NodeInspector() {
             Estimates
           </label>
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-slate-800/40 border border-slate-800 rounded-lg p-3">
+            <div className="bg-slate-700/40 border border-slate-600 rounded-lg p-3">
               <div className="text-xs text-slate-500 flex items-center gap-1 mb-1">
                 <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
                 Est. Cost
@@ -73,9 +81,9 @@ export default function NodeInspector() {
                 ${data.estimatedCost?.toFixed(2) || '0.00'}
               </div>
             </div>
-            <div className="bg-slate-800/40 border border-slate-800 rounded-lg p-3">
+            <div className="bg-slate-700/40 border border-slate-600 rounded-lg p-3">
               <div className="text-xs text-slate-500 flex items-center gap-1 mb-1">
-                <Clock className="w-3.5 h-3.5 text-blue-400" />
+                <Clock className="w-3.5 h-3.5 text-primary" />
                 Est. Time
               </div>
               <div className="text-lg font-bold text-slate-100">
@@ -112,6 +120,12 @@ export default function NodeInspector() {
               {data.brandCheck.message && (
                 <p className="text-xs text-slate-400 mt-1">{data.brandCheck.message}</p>
               )}
+              {data.brandCheck.score && (
+                <div className="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                  <Shield className="w-3 h-3" />
+                  Score: {data.brandCheck.score}%
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -127,7 +141,7 @@ export default function NodeInspector() {
               onChange={(e) => setPrompt(e.target.value)}
               onBlur={() => updateNode(selectedNode.id, { prompt })}
               rows={4}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono"
+              className="w-full bg-slate-800 border border-slate-600 rounded-lg p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-primary font-mono"
               placeholder="Enter node prompt template..."
             />
             <p className="text-[11px] text-slate-500 mt-1">Changes are saved automatically on blur.</p>
