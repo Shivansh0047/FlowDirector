@@ -248,7 +248,7 @@ export default function WorkflowCanvas() {
 
       {/* Header Bar */}
       <header className="h-14 border-b border-slate-700 bg-white/80 backdrop-blur px-6 flex items-center justify-between z-10">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => navigate('/')}
             className="p-1.5 hover:bg-slate-700 rounded-lg text-slate-600 hover:text-slate-900 transition-colors"
@@ -275,7 +275,7 @@ export default function WorkflowCanvas() {
           </button>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Metrics summary */}
           <div className="flex items-center gap-4 text-xs text-slate-400 bg-emerald-50/60 px-4 py-2 rounded-lg border border-slate-600/50">
             <span className="flex items-center gap-1.5">
