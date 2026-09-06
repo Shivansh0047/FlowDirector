@@ -2,19 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ChronoTask-inspired design system */
+/* FlowDirector design system — light mode */
 
 :root {
-  /* Color palette - inspired by professional SaaS with timeline/chronology theme */
-  --primary: #2563eb; /* blue-600 */
-  --primary-light: #3b82f6; /* blue-500 */
-  --primary-dark: #1d4ed8; /* blue-700 */
-  --secondary: #0f766e; /* teal-600 */
-  --accent: #10b981; /* emerald-500 */
-  --warning: #f59e0b; /* amber-500 */
-  --error: #ef4444; /* red-500 */
+  /* Brand colors */
+  --primary: #10b981;        /* emerald-500 — main brand accent */
+  --primary-light: #34d399;  /* emerald-400 */
+  --primary-dark: #059669;   /* emerald-600 */
 
-  /* Neutrals */
+  --button: #2563eb;         /* blue-600 — explicit CTA color */
+  --button-light: #3b82f6;   /* blue-500 */
+  --button-dark: #1d4ed8;    /* blue-700 */
+
+  --secondary: #0f766e;      /* teal-600 */
+  --accent: #10b981;         /* emerald-500 */
+  --warning: #f59e0b;        /* amber-500 */
+  --error: #ef4444;          /* red-500 */
+
+  /* Neutrals — light theme */
   --slate-50: #f8fafc;
   --slate-100: #f1f5f9;
   --slate-200: #e2e8f0;
@@ -27,12 +32,12 @@
   --slate-900: #0f172a;
   --slate-950: #020617;
 
-  /* Timeline/chrono specific */
-  --timeline-line: #e2e8f0;
-  --timeline-dot-primary: #2563eb;
+  /* Timeline */
+  --timeline-line: #cbd5e1;
+  --timeline-dot-primary: #10b981;
   --timeline-dot-secondary: #64748b;
 
-  /* Transition */
+  /* Effects */
   --transition-speed: 0.3s;
   --border-radius: 0.5rem;
   --border-radius-lg: 0.75rem;
@@ -44,40 +49,23 @@
 
 @layer base {
   :root {
-    color-scheme: light dark;
+    color-scheme: light;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    @apply bg-white text-slate-900 antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
-  }
-
-  /* Dark mode adjustments */
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --slate-50: #0f172a;
-      --slate-100: #1e293b;
-      --slate-200: #334155;
-      --slate-300: #475569;
-      --slate-400: #64748b;
-      --slate-500: #94a3b8;
-      --slate-600: #cbd5e1;
-      --slate-700: #e2e8f0;
-      --slate-800: #f1f5f9;
-      --slate-900: #f8fafc;
-      --slate-950: #ffffff;
-    }
-
-    body {
-      @apply bg-slate-950 text-slate-50;
-    }
   }
 }
 
 @layer components {
-  /* Button variants */
+  /* Button variants — buttons explicitly stay BLUE */
   .btn-primary {
-    @apply bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary-dark transition-colors duration-200 shadow hover:shadow-md transform hover:-translate-y-0.5;
+    @apply text-white px-6 py-3 rounded-lg font-medium shadow hover:shadow-md transform hover:-translate-y-0.5 transition-colors duration-200;
+    background-color: #2563eb;
+  }
+  .btn-primary:hover {
+    background-color: #1d4ed8;
   }
 
   .btn-secondary {
@@ -89,32 +77,32 @@
   }
 
   .btn-accent {
-    @apply bg-accent text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-600 transition-colors duration-200 shadow hover:shadow-md;
+    @apply bg-emerald-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-emerald-600 transition-colors duration-200 shadow hover:shadow-md;
   }
 
-  /* Card variants */
+  /* Card variants — light surfaces */
   .card {
-    @apply bg-white dark:bg-slate-900 rounded-lg shadow border border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow duration-200;
+    @apply bg-white rounded-lg shadow border border-slate-200 hover:shadow-md transition-shadow duration-200;
   }
 
   .card-elevated {
-    @apply bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-shadow duration-200;
+    @apply bg-white rounded-xl shadow-lg border border-slate-200 hover:shadow-xl transition-shadow duration-200;
   }
 
   .card-hover {
-    @apply bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200;
+    @apply bg-white rounded-lg border border-slate-200 hover:bg-slate-50 transition-all duration-200;
   }
 
-  /* Input variants */
+  /* Inputs */
   .input {
-    @apply w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500;
+    @apply w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 bg-white text-slate-900 placeholder-slate-400;
   }
 
   .textarea {
-    @apply w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 min-h-[100px] resize-y bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500;
+    @apply w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all duration-200 min-h-[100px] resize-y bg-white text-slate-900 placeholder-slate-400;
   }
 
-  /* Timeline/chrono specific components */
+  /* Timeline */
   .timeline {
     @apply relative pl-4 mb-8;
   }
@@ -129,7 +117,7 @@
   }
 
   .timeline-dot {
-    @apply absolute left-0 top-2.5 -ml-2.5 h-4 w-4 rounded-full bg-primary border-2 border-white dark:border-slate-950 shadow;
+    @apply absolute left-0 top-2.5 -ml-2.5 h-4 w-4 rounded-full bg-primary border-2 border-white shadow;
   }
 
   .timeline-content {
@@ -137,35 +125,35 @@
   }
 
   .timeline-date {
-    @apply text-xs text-slate-500 dark:text-slate-400 mb-1 font-medium;
+    @apply text-xs text-slate-500 mb-1 font-medium;
   }
 
   .timeline-title {
-    @apply font-semibold text-slate-900 dark:text-slate-50 mb-1;
+    @apply font-semibold text-slate-900 mb-1;
   }
 
   .timeline-description {
-    @apply text-slate-600 dark:text-slate-300 text-sm;
+    @apply text-slate-600 text-sm;
   }
 
-  /* Section variants */
+  /* Sections — all light */
   .section {
     @apply py-16;
   }
 
-  .section-dark {
-    @apply bg-slate-50 dark:bg-slate-950;
+  .section-light {
+    @apply bg-white;
   }
 
-  .section-light {
-    @apply bg-white dark:bg-slate-900;
+  .section-tint {
+    @apply bg-slate-50;
   }
 
   .section-gradient {
-    @apply bg-gradient-to-br from-slate-50 via-slate-100 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-800;
+    @apply bg-gradient-to-br from-white via-slate-50 to-white;
   }
 
-  /* Hero section */
+  /* Hero */
   .hero {
     @apply relative overflow-hidden;
   }
@@ -214,9 +202,9 @@
     }
   }
 
-  /* Glassmorphism effect */
+  /* Glass — light variant */
   .glass {
-    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur border border-white/20 dark:border-slate-600/20;
+    @apply bg-white/80 backdrop-blur border border-slate-200/60;
   }
 
   /* Focus rings */

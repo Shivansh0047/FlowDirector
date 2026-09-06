@@ -19,7 +19,7 @@ const VISUAL_STYLES = [
   { id: 'raw_authentic', label: 'Raw Documentary / UGC', desc: 'Natural grain, approachable daylight, handheld feel' },
 ]
 
-export default function BriefChatbot({ onComplete }) {
+export default function BriefChatbot({ open = false, onClose, onComplete }) {
   const navigate = useNavigate()
   const { setProject, loadDemoWorkflow } = useWorkflowStore()
 
@@ -148,32 +148,35 @@ export default function BriefChatbot({ onComplete }) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto bg-slate-900/80 border border-slate-800 rounded-2xl shadow-2xl backdrop-blur overflow-hidden flex flex-col h-[700px]">
+    <>
+      {open && (
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-start justify-center pt-24 px-4" onClick={onClose}>
+      <div className="max-w-4xl w-full bg-white/90 border border-slate-200 rounded-2xl shadow-2xl backdrop-blur overflow-hidden flex flex-col h-[700px]" onClick={e => e.stopPropagation()}>
       {/* Top Bar with Demo Switcher */}
-      <div className="px-6 py-4 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between">
+      <div className="px-6 py-4 border-b border-slate-200 bg-white/90 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-green-400 flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-slate-950" />
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               FlowDirector Creative Assistant
               <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/40">
                 Step {step} of 6
               </span>
             </h2>
-            <p className="text-xs text-slate-400">Interactive brief questionnaire</p>
+            <p className="text-xs text-slate-500">Interactive brief questionnaire</p>
           </div>
         </div>
 
         {/* Quick Load Demo Presets */}
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 hidden sm:inline">Or quick load:</span>
+          <span className="text-xs text-slate-900 hidden sm:inline">Or quick load:</span>
           {DEMO_PRESETS.map((preset) => (
             <button
               key={preset.id}
               onClick={() => handleSelectPreset(preset)}
-              className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-cyan-300 border border-slate-700 transition-colors flex items-center gap-1.5"
+              className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-700 text-slate-600 hover:text-cyan-300 border border-slate-300 transition-colors flex items-center gap-1.5"
               title={preset.tagline}
             >
               <Zap className="w-3 h-3 text-cyan-400" />
@@ -198,8 +201,8 @@ export default function BriefChatbot({ onComplete }) {
             <div
               className={`max-w-xl rounded-2xl p-4 text-sm leading-relaxed ${
                 msg.sender === 'user'
-                  ? 'bg-blue-600 text-white rounded-tr-none'
-                  : 'bg-slate-800/80 text-slate-200 border border-slate-700/60 rounded-tl-none'
+                  ? 'bg-button text-white rounded-tr-none'
+                  : 'bg-slate-100/80 text-slate-800 border border-slate-300/60 rounded-tl-none'
               }`}
             >
               {msg.text}
@@ -208,11 +211,11 @@ export default function BriefChatbot({ onComplete }) {
         ))}
 
         {/* Step-specific Input Controls */}
-        <div className="mt-4 bg-slate-950/60 border border-slate-800 rounded-xl p-5 shadow-inner">
+        <div className="mt-4 bg-white/90 border border-slate-200 rounded-xl p-5 shadow-inner">
           {/* STEP 1: Content Type */}
           {step === 1 && (
             <div className="space-y-4">
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Select Content Format
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -229,12 +232,12 @@ export default function BriefChatbot({ onComplete }) {
                     }}
                     className={`p-3.5 text-left rounded-xl border transition-all ${
                       formData.contentType === type.id
-                        ? 'border-cyan-500 bg-cyan-500/10 text-slate-100'
-                        : 'border-slate-800 bg-slate-900/60 text-slate-300 hover:border-slate-700'
+                        ? 'border-cyan-500 bg-cyan-500/10 text-slate-900'
+                        : 'border-slate-200 bg-slate-100/60 text-slate-600 hover:border-slate-300'
                     }`}
                   >
                     <div className="font-semibold text-sm">{type.label}</div>
-                    <div className="text-xs text-slate-500 mt-1">{type.desc}</div>
+                    <div className="text-xs text-slate-900 mt-1">{type.desc}</div>
                   </button>
                 ))}
               </div>
@@ -244,7 +247,7 @@ export default function BriefChatbot({ onComplete }) {
           {/* STEP 2: Product / Subject */}
           {step === 2 && (
             <div className="space-y-4">
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Product Details
               </label>
               <input
@@ -252,14 +255,14 @@ export default function BriefChatbot({ onComplete }) {
                 value={formData.product}
                 onChange={(e) => setFormData({ ...formData, product: e.target.value })}
                 placeholder="e.g., Aura Glow Botanical Serum"
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500"
+                className="w-full bg-white border border-slate-300 rounded-lg p-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-400"
               />
               <textarea
                 value={formData.productDescription}
                 onChange={(e) => setFormData({ ...formData, productDescription: e.target.value })}
                 placeholder="Key features (e.g., Amber glass bottle, hyaluronic acid, dewy glow finish)"
                 rows={2}
-                className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 focus:outline-none focus:border-cyan-500"
+                className="w-full bg-white border border-slate-300 rounded-lg p-3 text-sm text-slate-800 focus:outline-none focus:border-emerald-400"
               />
               <button
                 disabled={!formData.product.trim()}
@@ -278,7 +281,7 @@ export default function BriefChatbot({ onComplete }) {
           {/* STEP 3: Target Audience */}
           {step === 3 && (
             <div className="space-y-4">
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Target Audience Demographics & Persona
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -298,7 +301,7 @@ export default function BriefChatbot({ onComplete }) {
                         `Audience: ${aud}`
                       )
                     }}
-                    className="p-3 text-left rounded-lg border border-slate-800 bg-slate-900/60 hover:border-cyan-500 text-xs font-medium text-slate-200 transition-all"
+                    className="p-3 text-left rounded-lg border border-slate-200 bg-slate-100/60 hover:border-emerald-400 text-xs font-medium text-slate-800 transition-all"
                   >
                     {aud}
                   </button>
@@ -310,7 +313,7 @@ export default function BriefChatbot({ onComplete }) {
           {/* STEP 4: Visual Style */}
           {step === 4 && (
             <div className="space-y-4">
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Visual Style & Camera Direction
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -325,10 +328,10 @@ export default function BriefChatbot({ onComplete }) {
                         `Visual Style: ${style.label}`
                       )
                     }}
-                    className="p-3.5 text-left rounded-xl border border-slate-800 bg-slate-900/60 hover:border-cyan-500 text-slate-200 transition-all"
+                    className="p-3.5 text-left rounded-xl border border-slate-200 bg-slate-100/60 hover:border-emerald-400 text-slate-800 transition-all"
                   >
                     <div className="font-semibold text-sm">{style.label}</div>
-                    <div className="text-xs text-slate-500 mt-1">{style.desc}</div>
+                    <div className="text-xs text-slate-900 mt-1">{style.desc}</div>
                   </button>
                 ))}
               </div>
@@ -343,34 +346,34 @@ export default function BriefChatbot({ onComplete }) {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">Brand Name</label>
+                  <label className="block text-[11px] text-slate-500 mb-1">Brand Name</label>
                   <input
                     type="text"
                     value={formData.brandName}
                     onChange={(e) => setFormData({ ...formData, brandName: e.target.value })}
                     placeholder="e.g. Aura Skin"
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-200"
+                    className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1">Tone Keywords</label>
+                  <label className="block text-[11px] text-slate-500 mb-1">Tone Keywords</label>
                   <input
                     type="text"
                     value={formData.brandTone}
                     onChange={(e) => setFormData({ ...formData, brandTone: e.target.value })}
                     placeholder="premium, authentic, minimal"
-                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-200"
+                    className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-[11px] text-slate-400 mb-1">Brand Restrictions (Guardian Rules)</label>
+                <label className="block text-[11px] text-slate-500 mb-1">Brand Restrictions (Guardian Rules)</label>
                 <input
                   type="text"
                   value={formData.restrictions}
                   onChange={(e) => setFormData({ ...formData, restrictions: e.target.value })}
                   placeholder="Avoid saturated neon colors, maintain natural skin texture"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-200"
+                  className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800"
                 />
               </div>
               <button
@@ -389,14 +392,14 @@ export default function BriefChatbot({ onComplete }) {
           {/* STEP 6: Priorities & Generate */}
           {step === 6 && (
             <div className="space-y-5">
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
                 <Gauge className="w-4 h-4 text-cyan-400" />
                 Model Router Optimization Weights
               </label>
 
               <div className="space-y-3">
                 <div>
-                  <div className="flex justify-between text-xs text-slate-300 mb-1">
+                  <div className="flex justify-between text-xs text-slate-600 mb-1">
                     <span>Quality Priority</span>
                     <strong className="text-cyan-400">{Math.round(formData.priority.quality * 100)}%</strong>
                   </div>
@@ -415,7 +418,7 @@ export default function BriefChatbot({ onComplete }) {
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-xs text-slate-300 mb-1">
+                  <div className="flex justify-between text-xs text-slate-600 mb-1">
                     <span>Cost Sensitivity</span>
                     <strong className="text-emerald-400">{Math.round(formData.priority.cost * 100)}%</strong>
                   </div>
@@ -434,10 +437,10 @@ export default function BriefChatbot({ onComplete }) {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
                 <button
                   onClick={() => setStep(1)}
-                  className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1"
+                  className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1"
                 >
                   <RefreshCw className="w-3 h-3" /> Start Over
                 </button>
@@ -467,5 +470,8 @@ export default function BriefChatbot({ onComplete }) {
         <div ref={chatEndRef} />
       </div>
     </div>
-  )
+  </div>
+)}
+</>
+)
 }

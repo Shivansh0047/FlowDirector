@@ -7,15 +7,22 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Primary = green (main brand accent: hero gradients, focus rings, timeline dots)
         primary: {
           DEFAULT: 'var(--primary)',
           light: 'var(--primary-light)',
           dark: 'var(--primary-dark)',
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          500: '#10b981',
+          600: '#059669',
+          700: '#047857',
+        },
+        // Button = blue (CTAs explicitly stay blue)
+        button: {
+          DEFAULT: 'var(--button)',
+          light: 'var(--button-light)',
+          dark: 'var(--button-dark)',
         },
         secondary: 'var(--secondary)',
         accent: 'var(--accent)',
