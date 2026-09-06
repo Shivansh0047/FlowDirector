@@ -228,12 +228,12 @@ export default function WorkflowCanvas() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-slate-950 text-slate-100 overflow-hidden">
+    <div className="h-screen flex flex-col bg-slate-50 text-slate-900 overflow-hidden">
       {/* Timeline header decoration */}
       <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
       {/* Brief Chatbot Modal */}
       {showBriefModal && (
-        <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-slate-50/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="relative w-full max-w-4xl">
             <button
               onClick={() => setShowBriefModal(false)}
@@ -247,17 +247,17 @@ export default function WorkflowCanvas() {
       )}
 
       {/* Header Bar */}
-      <header className="h-14 border-b border-slate-700 bg-slate-800/80 backdrop-blur px-6 flex items-center justify-between z-10">
+      <header className="h-14 border-b border-slate-700 bg-white/80 backdrop-blur px-6 flex items-center justify-between z-10">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/')}
-            className="p-1.5 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-slate-100 transition-colors"
+            className="p-1.5 hover:bg-slate-700 rounded-lg text-slate-600 hover:text-slate-900 transition-colors"
             title="Back to Landing"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-100 tracking-tight">FlowDirector</span>
+            <span className="font-bold text-slate-900 tracking-tight">FlowDirector</span>
             <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-primary/20 text-primary border border-primary/40">
               DEMO PROTOTYPE
             </span>
@@ -268,7 +268,7 @@ export default function WorkflowCanvas() {
           </span>
           <button
             onClick={() => setShowBriefModal(true)}
-            className="flex items-center gap-1 text-xs px-2.5 py-1 rounded bg-slate-700 text-slate-300 hover:text-cyan-300 border border-slate-600 transition-colors ml-2"
+            className="flex items-center gap-1 text-xs px-2.5 py-1 rounded bg-slate-700 text-slate-600 hover:text-cyan-300 border border-slate-600 transition-colors ml-2"
           >
             <Plus className="w-3.5 h-3.5 text-cyan-400" />
             New Brief
@@ -277,7 +277,7 @@ export default function WorkflowCanvas() {
 
         <div className="flex items-center gap-4">
           {/* Metrics summary */}
-          <div className="flex items-center gap-4 text-xs text-slate-400 bg-slate-700/50 px-4 py-2 rounded-lg border border-slate-600/50">
+          <div className="flex items-center gap-4 text-xs text-slate-400 bg-emerald-50/60 px-4 py-2 rounded-lg border border-slate-600/50">
             <span className="flex items-center gap-1.5">
               <DollarSign className="w-4 h-4 text-emerald-400" />
               Est. Cost: <strong className="text-slate-200">${metadata?.totalCost?.toFixed(2) || '1.84'}</strong>
@@ -332,13 +332,13 @@ export default function WorkflowCanvas() {
       {/* Main 3-Column Layout */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Column: Chat / Command Assistant */}
-        <div className="w-80 border-r border-slate-800 bg-slate-900/40 flex flex-col z-10">
-          <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="w-80 border-r border-slate-200 bg-white/60 flex flex-col z-10">
+          <div className="p-4 border-b border-slate-200 flex items-center justify-between">
             <h3 className="font-semibold text-sm text-slate-200 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-cyan-400" />
               Agent Assistant
             </h3>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+            <span className="text-[10px] px-2 py-0.5 rounded bg-white text-slate-400 border border-slate-700">
               LangGraph
             </span>
           </div>
@@ -350,7 +350,7 @@ export default function WorkflowCanvas() {
                 className={`${
                   msg.sender === 'user'
                     ? 'bg-blue-600/20 border border-blue-500/30 text-slate-200 ml-4'
-                    : 'bg-slate-800/60 border border-slate-700/60 text-slate-300'
+                    : 'bg-white/60 border border-slate-700/60 text-slate-600'
                 } p-3 rounded-lg leading-relaxed`}
               >
                 {msg.text}
@@ -358,14 +358,14 @@ export default function WorkflowCanvas() {
             ))}
 
             {isProcessingCommand && (
-              <div className="bg-slate-800/60 border border-slate-700/60 p-3 rounded-lg text-slate-400 flex items-center gap-2">
+              <div className="bg-white/60 border border-slate-700/60 p-3 rounded-lg text-slate-400 flex items-center gap-2">
                 <div className="w-3 h-3 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
                 Processing command...
               </div>
             )}
           </div>
 
-          <div className="p-4 border-t border-slate-800">
+          <div className="p-4 border-t border-slate-200">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -374,7 +374,7 @@ export default function WorkflowCanvas() {
                 onKeyDown={(e) => e.key === 'Enter' && handleChatCommand()}
                 placeholder='Try: "Make this 30% cheaper"'
                 disabled={isProcessingCommand}
-                className="flex-1 bg-slate-800/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 disabled:opacity-50"
+                className="flex-1 bg-white/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 disabled:opacity-50"
               />
               <button
                 onClick={handleChatCommand}
@@ -388,7 +388,7 @@ export default function WorkflowCanvas() {
         </div>
 
         {/* Center: React Flow Canvas */}
-        <div className="flex-1 h-full bg-slate-950 relative">
+        <div className="flex-1 h-full bg-slate-50 relative">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -401,17 +401,17 @@ export default function WorkflowCanvas() {
             attributionPosition="bottom-left"
           >
             <Background color="#1e293b" gap={16} size={1} />
-            <Controls className="!bg-slate-900 !border-slate-800 !text-slate-200 fill-slate-200" />
+            <Controls className="!bg-white !border-slate-200 !text-slate-900 fill-emerald-600" />
             <MiniMap
               nodeColor={() => '#0284c7'}
               maskColor="rgba(15, 23, 42, 0.7)"
-              className="!bg-slate-900 !border-slate-800 !rounded-lg"
+              className="!bg-white !border-slate-200 !rounded-lg"
             />
           </ReactFlow>
         </div>
 
         {/* Right Column: Node Inspector */}
-        <div className="w-80 border-l border-slate-800 bg-slate-900/40 flex flex-col z-10">
+        <div className="w-80 border-l border-slate-200 bg-white/60 flex flex-col z-10">
           <NodeInspector />
         </div>
       </div>

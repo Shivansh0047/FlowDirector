@@ -17,7 +17,7 @@ export default function NodeInspector() {
     return (
       <div className="p-4 text-center text-slate-500">
         <Sparkles className="w-8 h-8 mx-auto mb-2 text-slate-600" />
-        <p className="text-sm font-medium text-slate-400">No node selected</p>
+        <p className="text-sm font-medium text-slate-500">No node selected</p>
         <p className="text-xs mt-1">Click any node on the canvas to inspect its configuration and model routing.</p>
       </div>
     )
@@ -30,12 +30,12 @@ export default function NodeInspector() {
       {/* Header */}
       <div className="p-4 border-b border-slate-700 flex items-center justify-between">
         <div>
-          <h3 className="font-semibold text-sm text-slate-100">{data.label}</h3>
+          <h3 className="font-semibold text-sm text-slate-900">{data.label}</h3>
           <p className="text-xs text-slate-500 capitalize">{data.type?.replace('_', ' ')}</p>
         </div>
         <button
           onClick={() => setSelectedNode(null)}
-          className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-slate-200"
+          className="p-1 hover:bg-slate-700 rounded text-slate-500 hover:text-slate-200"
         >
           <X className="w-4 h-4" />
         </button>
@@ -46,10 +46,10 @@ export default function NodeInspector() {
         {/* Model Selection */}
         {data.model && (
           <div>
-            <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
               Selected Model
             </label>
-            <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-3">
+            <div className="bg-emerald-50/60 border border-slate-600 rounded-lg p-3">
               <div className="flex items-center justify-between mb-1">
                 <span className="font-mono text-sm font-medium text-primary">
                   {data.model.name}
@@ -57,7 +57,7 @@ export default function NodeInspector() {
                 <span className="text-xs text-slate-500">Provider: {data.model.provider || 'AI'}</span>
               </div>
               {data.modelReason && (
-                <p className="text-xs text-slate-400 mt-2 bg-slate-800/50 p-2 rounded border border-slate-700">
+                <p className="text-xs text-slate-500 mt-2 bg-slate-100/60 p-2 rounded border border-slate-700">
                   <Zap className="w-3 h-3 inline-block mr-1 text-primary" />
                   <strong>Router explanation:</strong> {data.modelReason}
                 </p>
@@ -68,7 +68,7 @@ export default function NodeInspector() {
 
         {/* Cost & Time Metrics */}
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+          <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
             Estimates
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -77,7 +77,7 @@ export default function NodeInspector() {
                 <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
                 Est. Cost
               </div>
-              <div className="text-lg font-bold text-slate-100">
+              <div className="text-lg font-bold text-slate-900">
                 ${data.estimatedCost?.toFixed(2) || '0.00'}
               </div>
             </div>
@@ -86,7 +86,7 @@ export default function NodeInspector() {
                 <Clock className="w-3.5 h-3.5 text-primary" />
                 Est. Time
               </div>
-              <div className="text-lg font-bold text-slate-100">
+              <div className="text-lg font-bold text-slate-900">
                 {data.estimatedTime || 0}s
               </div>
             </div>
@@ -96,7 +96,7 @@ export default function NodeInspector() {
         {/* Brand Check Status */}
         {data.brandCheck && (
           <div>
-            <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
               Brand Guardian
             </label>
             <div className={`p-3 rounded-lg border ${
@@ -118,10 +118,10 @@ export default function NodeInspector() {
                 )}
               </div>
               {data.brandCheck.message && (
-                <p className="text-xs text-slate-400 mt-1">{data.brandCheck.message}</p>
+                <p className="text-xs text-slate-500 mt-1">{data.brandCheck.message}</p>
               )}
               {data.brandCheck.score && (
-                <div className="mt-2 text-xs text-slate-400 flex items-center gap-1">
+                <div className="mt-2 text-xs text-slate-500 flex items-center gap-1">
                   <Shield className="w-3 h-3" />
                   Score: {data.brandCheck.score}%
                 </div>
@@ -133,7 +133,7 @@ export default function NodeInspector() {
         {/* Prompt Configuration */}
         {data.prompt !== undefined && (
           <div>
-            <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">
               Prompt / Template
             </label>
             <textarea
