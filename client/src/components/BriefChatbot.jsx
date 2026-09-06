@@ -19,7 +19,7 @@ const VISUAL_STYLES = [
   { id: 'raw_authentic', label: 'Raw Documentary / UGC', desc: 'Natural grain, approachable daylight, handheld feel' },
 ]
 
-export default function BriefChatbot({ onComplete }) {
+export default function BriefChatbot({ open = false, onClose, onComplete }) {
   const navigate = useNavigate()
   const { setProject, loadDemoWorkflow } = useWorkflowStore()
 
@@ -148,7 +148,10 @@ export default function BriefChatbot({ onComplete }) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto bg-white/90 border border-slate-200 rounded-2xl shadow-2xl backdrop-blur overflow-hidden flex flex-col h-[700px]">
+    <>
+      {open && (
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-start justify-center pt-24 px-4" onClick={onClose}>
+      <div className="max-w-4xl w-full bg-white/90 border border-slate-200 rounded-2xl shadow-2xl backdrop-blur overflow-hidden flex flex-col h-[700px]" onClick={e => e.stopPropagation()}>
       {/* Top Bar with Demo Switcher */}
       <div className="px-6 py-4 border-b border-slate-200 bg-white/90 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -168,7 +171,7 @@ export default function BriefChatbot({ onComplete }) {
 
         {/* Quick Load Demo Presets */}
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-9000 hidden sm:inline">Or quick load:</span>
+          <span className="text-xs text-slate-900 hidden sm:inline">Or quick load:</span>
           {DEMO_PRESETS.map((preset) => (
             <button
               key={preset.id}
@@ -234,7 +237,7 @@ export default function BriefChatbot({ onComplete }) {
                     }`}
                   >
                     <div className="font-semibold text-sm">{type.label}</div>
-                    <div className="text-xs text-slate-9000 mt-1">{type.desc}</div>
+                    <div className="text-xs text-slate-900 mt-1">{type.desc}</div>
                   </button>
                 ))}
               </div>
@@ -328,7 +331,7 @@ export default function BriefChatbot({ onComplete }) {
                     className="p-3.5 text-left rounded-xl border border-slate-200 bg-slate-100/60 hover:border-emerald-400 text-slate-800 transition-all"
                   >
                     <div className="font-semibold text-sm">{style.label}</div>
-                    <div className="text-xs text-slate-9000 mt-1">{style.desc}</div>
+                    <div className="text-xs text-slate-900 mt-1">{style.desc}</div>
                   </button>
                 ))}
               </div>
@@ -467,5 +470,8 @@ export default function BriefChatbot({ onComplete }) {
         <div ref={chatEndRef} />
       </div>
     </div>
-  )
+  </div>
+)}
+</>
+)
 }

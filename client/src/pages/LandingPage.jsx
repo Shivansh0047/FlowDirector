@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sparkles, ArrowRight, Menu, X } from 'lucide-react'
+import { Sparkles, ArrowRight, Menu, X, Clock, MessageSquare } from 'lucide-react'
+import BriefChatbot from '../components/BriefChatbot'
 
 export default function LandingPage() {
   const navigate = useNavigate()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const [showChatbot, setShowChatbot] = useState(false)
+  const handleNavigate = (path) => navigate(path)
 
   const [plan, setPlan] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -69,13 +73,8 @@ export default function LandingPage() {
             From brief to optimized workflow. Build, refine, and ship AI-powered content faster than ever.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-14">
-            <button
-              onClick={() => { callBackend('/api/creative-plan', { brief: { contentType: 'instagram_ad', product: 'Demo Product', audience: 'General', visualStyle: 'cinematic', duration: 30 }, brand_dna: { brandName: 'Demo', tone: ['premium'], colors: ['#10b981'] } }); setTimeout(() => navigate('/workflow'), 1200); }}
-              className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-[#0a0a0a] text-white font-medium shadow-xl shadow-black/10 hover:bg-[#222] transition-all"
-            >
-              {loading ? 'Generating...' : 'Start Generating'} <ArrowRight className="w-4 h-4" />
-            </button>
-            <button onClick={() => navigate('/workflow')} className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-[#0a0a0a] font-medium border border-[#ececea] hover:border-[#d6d6d6] transition-all">Try Demos</button>
+            <button onClick={() => handleNavigate('/workflow')} className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-[#0a0a0a] text-white font-medium shadow-xl shadow-black/10 hover:bg-[#222] transition-all"><Clock className="w-4 h-4" /> Start Creating</button>
+            <button onClick={() => setShowChatbot(true)} className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-[#0a0a0a] font-medium border border-[#ececea] hover:border-[#d6d6d6] transition-all"><MessageSquare className="w-4 h-4" /> Try the Demo</button>
           </div>
           <div className="flex justify-center gap-14 md:gap-20 text-[#8a8a8a] text-sm font-medium">
             <div><span className="block text-3xl font-extrabold text-[#0a0a0a] mb-1">3</span>Steps to workflow</div>
@@ -149,7 +148,9 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="about" className="py-20 md:py-28 bg-[#fdfcf8] border-t border-[#ececea]/60">
+        <BriefChatbot open={showChatbot} onClose={() => setShowChatbot(false)} />
+
+      <section id="about" className="py-20 md:py-28 bg-[#fdfcf8] border-t border-[#ececea]/60">
         <div className="mx-auto max-w-[1280px] px-8 text-center">
           <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700 mb-3">About FlowDirector</h2>
           <h3 className="text-3xl md:text-5xl font-extrabold tracking-[-0.03em] text-[#0a0a0a] mb-6">AI Creative Orchestration</h3>
