@@ -91,12 +91,12 @@ function WorkflowNode({ data, selected }) {
       )}
 
       {/* Mock generated output (mock web photos only) */}
-      {(data.type === 'image_generation' || data.type === 'video_generation') && (
+      {(data.type === 'image_generation' || data.type === 'video_generation' || data.type === 'audio_generation') && (
         <div className='mt-2 mb-2 rounded-lg overflow-hidden border border-slate-600 shadow-inner'>
           <img
-            src={data.type === 'video_generation'
-              ? 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=400&q=80'
-              : 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80'}
+            src={data.type === 'audio_generation'
+              ? 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=400&q=80'
+              : (data.type === 'video_generation' ? 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=400&q=80' : 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80')}
             alt='Mock generated output'
             className='w-full h-24 object-cover hover:scale-105 transition-transform duration-500'
           />
