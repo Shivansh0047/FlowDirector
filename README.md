@@ -47,6 +47,14 @@ Built as an interactive product prototype for creative professionals (editors, d
 
 ---
 
+## 🌐 Deployed URLs (Render)
+
+- **Frontend:** https://flowdirector-frontend.onrender.com
+- **Agent (Python, 8000):** https://flowdirector.onrender.com
+- **Server (Node, 5000):** https://flowdirector-server.onrender.com
+
+---
+
 ## 🔍 What Uses Real AI vs Mock (Current State)
 
 **Real AI / Code:**
