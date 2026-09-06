@@ -248,7 +248,7 @@ export default function WorkflowCanvas() {
 
       {/* Header Bar */}
       <header className="h-14 border-b border-slate-700 bg-white/80 backdrop-blur px-6 flex items-center justify-between z-10">
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-4 flex-nowrap">
           <button
             onClick={() => navigate('/')}
             className="p-1.5 hover:bg-slate-700 rounded-lg text-slate-600 hover:text-slate-900 transition-colors"
@@ -268,14 +268,14 @@ export default function WorkflowCanvas() {
           </span>
           <button
             onClick={() => setShowBriefModal(true)}
-            className="flex items-center gap-1 text-xs px-2.5 py-1 rounded bg-slate-700 text-slate-600 hover:text-cyan-300 border border-slate-600 transition-colors ml-2"
+            className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-600 hover:text-cyan-300 border border-slate-600 transition-colors ml-1 whitespace-nowrap shrink-0"
           >
             <Plus className="w-3.5 h-3.5 text-cyan-400" />
             New Brief
           </button>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-4 flex-nowrap">
           {/* Metrics summary */}
           <div className="flex items-center gap-4 text-xs text-slate-400 bg-emerald-50/60 px-4 py-2 rounded-lg border border-slate-600/50">
             <span className="flex items-center gap-1.5">
