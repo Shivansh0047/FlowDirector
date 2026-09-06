@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
 import os
+from pathlib import Path
 import uvicorn
 from dotenv import load_dotenv
 
@@ -12,7 +13,8 @@ from .agents.brand_guardian import BrandGuardianAgent
 from .agents.model_router import ModelRouterAgent
 from .agents.optimizer import WorkflowOptimizer
 
-load_dotenv()
+# Load .env from the agents/ directory regardless of cwd (uvicorn reload runs from project root)
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 app = FastAPI(
     title="FlowDirector AI Agent Service",
@@ -139,17 +141,42 @@ def optimize_cost(req: OptimizeCostRequest):
 def handle_chat_command(req: ChatCommandRequest):
     """
     Processes natural-language commands from the user (e.g. "Make it 30% cheaper", "Check brand").
+    Fast path uses keyword matching for the obvious cases; otherwise routes through Groq
+    so the user can say anything and the system figures out which action (if any) to take.
     """
     cmd = req.command.lower().strip()
     workflow = req.current_workflow
+    brand_dna = req.brand_dna or {}
 
-    # 1. Cost optimization command
-    if any(phrase in cmd for phrase in ["cheaper", "reduce cost", "save money", "budget"]):
-        opt_result = optimizer.optimize_for_cost(workflow, target_reduction_pct=0.30)
+    # --- Fast path: obvious keywords, no LLM call needed ---
+    fast_action: Optional[Dict[str, Any]] = None
+    if any(p in cmd for p in ["cheaper", "reduce cost", "save money", "lower budget"]):
+        fast_action = {"action": "optimize_cost", "params": {"target_reduction_pct": 0.30}}
+    elif any(p in cmd for p in ["faster", "speed up", "quicker", "optimize for speed"]):
+        fast_action = {"action": "speed_optimize", "params": {"target_reduction_pct": 0.20}}
+    elif any(p in cmd for p in ["brand check", "verify brand", "check brand", "brand rules"]):
+        fast_action = {"action": "check_brand", "params": {}}
+
+    # --- Slow path: ask Groq to classify the intent ---
+    if not fast_action:
+        decision = creative_director.route_chat_command(req.command, workflow, brand_dna)
+        action = decision["action"]
+        params = decision.get("params", {}) or {}
+        message = decision.get("message", "")
+    else:
+        action = fast_action["action"]
+        params = fast_action["params"]
+        message = ""
+
+    # --- Execute the decided action ---
+    if action == "optimize_cost":
+        target = float(params.get("target_reduction_pct", 0.30))
+        opt_result = optimizer.optimize_for_cost(workflow, target_reduction_pct=target)
         return {
             "status": "success",
             "type": "optimization",
-            "message": (
+            "action": action,
+            "message": message or (
                 f"⚡ **Workflow optimized for lower cost!**\n\n"
                 f"• **Cost:** ${opt_result['cost_before']:.2f} → ${opt_result['cost_after']:.2f} "
                 f"({opt_result['reduction_pct']:.1f}% reduction)\n"
@@ -157,12 +184,29 @@ def handle_chat_command(req: ChatCommandRequest):
                 f"**Changes applied:**\n" +
                 "\n".join(f"- {c}" for c in opt_result['changes'])
             ),
-            "updated_workflow": opt_result["optimized_workflow"]
+            "updated_workflow": opt_result["optimized_workflow"],
         }
 
-    # 2. Brand check command
-    elif any(phrase in cmd for phrase in ["brand check", "verify brand", "check brand", "brand rules"]):
-        brand_dna = req.brand_dna or {}
+    if action == "speed_optimize":
+        # Speed optimization reuses the cost optimizer with a smaller target.
+        # (For a real prototype this would be a separate model-time-aware path.)
+        target = float(params.get("target_reduction_pct", 0.20))
+        opt_result = optimizer.optimize_for_cost(workflow, target_reduction_pct=target)
+        return {
+            "status": "success",
+            "type": "optimization",
+            "action": action,
+            "message": message or (
+                f"⚡ **Workflow rebalanced for speed!**\n\n"
+                f"• **Cost:** ${opt_result['cost_before']:.2f} → ${opt_result['cost_after']:.2f}\n"
+                f"• **Quality impact:** {opt_result['quality_impact']}\n\n"
+                f"**Changes applied:**\n" +
+                "\n".join(f"- {c}" for c in opt_result['changes'])
+            ),
+            "updated_workflow": opt_result["optimized_workflow"],
+        }
+
+    if action == "check_brand":
         issues = []
         for node in workflow.get("nodes", []):
             prompt = node.get("data", {}).get("prompt", "")
@@ -172,25 +216,26 @@ def handle_chat_command(req: ChatCommandRequest):
                     issues.append(f"• **{node['data']['label']}**: {check['violations'][0]['rule']}")
 
         if issues:
-            msg = "⚠ **Brand Guardian detected potential conflicts:**\n\n" + "\n".join(issues)
+            default_msg = "⚠ **Brand Guardian detected potential conflicts:**\n\n" + "\n".join(issues)
         else:
-            msg = "✓ **All nodes passed Brand DNA consistency checks!**"
+            default_msg = "✓ **All nodes passed Brand DNA consistency checks!**"
 
         return {
             "status": "success",
             "type": "brand_check",
-            "message": msg,
-            "updated_workflow": workflow
+            "action": action,
+            "message": message or default_msg,
+            "updated_workflow": workflow,
         }
 
-    # 3. Generic assistant response
-    else:
-        return {
-            "status": "success",
-            "type": "chat",
-            "message": f"Understood! I've noted your instruction: \"{req.command}\". Try asking me to **'Make this 30% cheaper'** or **'Check brand rules'**.",
-            "updated_workflow": workflow
-        }
+    # action == "chat" — pure conversational reply, no workflow change
+    return {
+        "status": "success",
+        "type": "chat",
+        "action": "chat",
+        "message": message,
+        "updated_workflow": workflow,
+    }
 
 
 if __name__ == "__main__":

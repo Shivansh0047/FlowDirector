@@ -1,22 +1,25 @@
 """
 Creative Director Agent — Generates campaign concepts, storyboards, and scripts from briefs.
-Uses Groq API (Llama 3) for creative text generation with smart template fallback.
+Also routes natural-language chat commands to workflow actions via Groq.
+Uses Groq API (openai/gpt-oss-120b) with smart template fallback.
 """
 
 import os
+from pathlib import Path
 from typing import Dict, Any, Optional
 from groq import Groq
 import json
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
+# Load .env from agents/ regardless of cwd
+load_dotenv(Path(__file__).resolve().parents[2] / ".." / ".env")
 
 
 class CreativeDirectorAgent:
     def __init__(self):
         self.groq_api_key = os.getenv("GROQ_API_KEY")
         self.client = Groq(api_key=self.groq_api_key) if self.groq_api_key else None
+        self.model_name = "openai/gpt-oss-120b"
 
     def generate_creative_plan(self, brief: Dict[str, Any], brand_dna: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -89,10 +92,9 @@ Return ONLY valid JSON with this structure:
 }}"""
 
         # Try Groq's GPT-OSS-120B model as requested; if unavailable, fallback handles it gracefully
-        model_name = "openai/gpt-oss-120b"  # GPT-OSS 120B via Groq
         try:
             response = self.client.chat.completions.create(
-                model=model_name,
+                model=self.model_name,
                 messages=[
                     {"role": "system", "content": "You are an expert creative director. Return only valid JSON."},
                     {"role": "user", "content": prompt}
@@ -113,6 +115,100 @@ Return ONLY valid JSON with this structure:
             content = content.split("```")[1].split("```")[0].strip()
 
         return json.loads(content)
+
+    def route_chat_command(
+        self,
+        command: str,
+        current_workflow: Dict[str, Any],
+        brand_dna: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Interprets a free-form user command and decides what workflow action to take.
+        Uses Groq with a strict JSON contract. Always returns a human-facing message.
+
+        Returns:
+            {
+                "action": "optimize_cost" | "speed_optimize" | "check_brand" | "chat",
+                "params": { ... } | {},
+                "message": str,
+            }
+
+        The caller (main.handle_chat_command) is responsible for executing the action
+        against the optimizer/brand_guardian and merging any returned workflow back in.
+        """
+
+        workflow_summary = {
+            "node_count": len(current_workflow.get("nodes", [])),
+            "types": [n.get("data", {}).get("type", "?") for n in current_workflow.get("nodes", [])],
+            "total_cost": sum(n.get("data", {}).get("estimatedCost", 0) for n in current_workflow.get("nodes", [])),
+        }
+
+        prompt = f"""You are FlowDirector's chat command router.
+
+The user is editing an AI creative workflow in a visual node canvas. The current workflow has:
+{json.dumps(workflow_summary, indent=2)}
+
+Brand DNA: {json.dumps(brand_dna or {}, indent=2)}
+
+User command: "{command}"
+
+Classify the command into exactly ONE action, and produce a short, conversational reply.
+
+Allowed actions:
+- "optimize_cost"  — user wants the workflow cheaper (params: target_reduction_pct, default 0.30)
+- "speed_optimize" — user wants the workflow faster (params: target_reduction_pct, default 0.20)
+- "check_brand"    — user wants brand compliance / consistency check
+- "chat"           — anything else (a question, a comment, no workflow change)
+
+Return ONLY valid JSON with this exact shape:
+{{
+  "action": "optimize_cost" | "speed_optimize" | "check_brand" | "chat",
+  "params": {{ ... action-specific ... }},
+  "message": "A short, friendly reply to the user (1-3 sentences, no markdown bullets)."
+}}"""
+
+        if self.client:
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": "You are a precise JSON-producing router for an AI workflow tool. Output only valid JSON.",
+                        },
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=0.2,
+                    max_tokens=400,
+                )
+                content = response.choices[0].message.content.strip()
+                if "```json" in content:
+                    content = content.split("```json")[1].split("```")[0].strip()
+                elif "```" in content:
+                    content = content.split("```")[1].split("```")[0].strip()
+                parsed = json.loads(content)
+                # Defensive: ensure required keys exist
+                action = parsed.get("action", "chat")
+                if action not in ("optimize_cost", "speed_optimize", "check_brand", "chat"):
+                    action = "chat"
+                return {
+                    "action": action,
+                    "params": parsed.get("params", {}) or {},
+                    "message": parsed.get("message") or f"Got it — I'll work on: \"{command}\".",
+                }
+            except Exception as e:
+                print(f"[Creative Director] Groq routing failed, using neutral fallback: {e}")
+                # fall through to neutral fallback below
+
+        # Neutral fallback when Groq is unavailable or failed
+        return {
+            "action": "chat",
+            "params": {},
+            "message": (
+                "I can help with: **make this cheaper**, **make this faster**, or **check brand rules**. "
+                f"You said: \"{command}\"."
+            ),
+        }
 
     def _generate_fallback(self, brief: Dict[str, Any], brand_dna: Dict[str, Any]) -> Dict[str, Any]:
         """
