@@ -90,6 +90,20 @@ function WorkflowNode({ data, selected }) {
         </div>
       )}
 
+      {/* Mock generated output (mock web photos only) */}
+      {(data.type === 'image_generation' || data.type === 'video_generation') && (
+        <div className='mt-2 mb-2 rounded-lg overflow-hidden border border-slate-600 shadow-inner'>
+          <img
+            src={data.type === 'video_generation'
+              ? 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=400&q=80'
+              : 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80'}
+            alt='Mock generated output'
+            className='w-full h-24 object-cover hover:scale-105 transition-transform duration-500'
+          />
+          <div className='text-[10px] text-slate-400 bg-slate-900/80 px-2 py-0.5'>Mock output — unsplash source</div>
+        </div>
+      )}
+
       {/* Status badge */}
       <div className="mt-2 pt-2 border-t border-slate-700/50">
         <StatusBadge status={data.status} />
