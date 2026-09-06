@@ -79,6 +79,11 @@ export default function BriefChatbot({ open = false, onClose, onComplete }) {
     setIsGenerating(true)
 
     try {
+      if (!brief || !brief.product) {
+        alert("Enter product name and brand first.")
+        setIsGenerating(false)
+        return
+      }
       // Build brief and brand DNA from formData
       const brief = {
         contentType: formData.contentType,

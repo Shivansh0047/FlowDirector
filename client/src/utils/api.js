@@ -60,6 +60,17 @@ export const agentsAPI = {
   },
 
   // Handle natural language chat commands
+  // Export workflow as JSON (Polish)
+  exportWorkflow: async (workflow) => {
+    const blob = new Blob([JSON.stringify(workflow, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'flowdirector_workflow.json'
+    a.click()
+    URL.revokeObjectURL(url)
+  },
+
   chatCommand: async (command, currentWorkflow, brandDNA) => {
     const response = await axios.post(`${AGENTS_API_BASE}/api/chat-command`, {
       command,

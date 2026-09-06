@@ -107,6 +107,7 @@ function WorkflowNode({ data, selected }) {
       {/* Status badge */}
       <div className="mt-2 pt-2 border-t border-slate-700/50">
         <StatusBadge status={data.status} />
+      {(data.status === "running") && <div className="mt-2 h-1 bg-gradient-to-r from-cyan-400 via-emerald-400 to-primary rounded-full animate-pulse" />}
       </div>
 
       {/* Output handle */}
