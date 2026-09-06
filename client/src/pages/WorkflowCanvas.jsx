@@ -334,7 +334,7 @@ export default function WorkflowCanvas() {
         {/* Left Column: Chat / Command Assistant */}
         <div className="w-80 border-r border-slate-200 bg-white/60 flex flex-col z-10">
           <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-            <h3 className="font-semibold text-sm text-slate-200 flex items-center gap-2">
+            <h3 className="font-semibold text-sm text-slate-900 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-cyan-400" />
               Agent Assistant
             </h3>
@@ -349,8 +349,8 @@ export default function WorkflowCanvas() {
                 key={idx}
                 className={`${
                   msg.sender === 'user'
-                    ? 'bg-blue-600/20 border border-blue-500/30 text-slate-200 ml-4'
-                    : 'bg-white/60 border border-slate-700/60 text-slate-600'
+                    ? 'bg-blue-50 border border-blue-200 text-blue-900 ml-4'
+                    : 'bg-white border border-slate-200 text-slate-800'
                 } p-3 rounded-lg leading-relaxed`}
               >
                 {msg.text}
@@ -358,7 +358,7 @@ export default function WorkflowCanvas() {
             ))}
 
             {isProcessingCommand && (
-              <div className="bg-white/60 border border-slate-700/60 p-3 rounded-lg text-slate-400 flex items-center gap-2">
+              <div className="bg-white border border-slate-200 p-3 rounded-lg text-slate-700 flex items-center gap-2">
                 <div className="w-3 h-3 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
                 Processing command...
               </div>
@@ -374,7 +374,7 @@ export default function WorkflowCanvas() {
                 onKeyDown={(e) => e.key === 'Enter' && handleChatCommand()}
                 placeholder='Try: "Make this 30% cheaper"'
                 disabled={isProcessingCommand}
-                className="flex-1 bg-white/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 disabled:opacity-50"
+                className="flex-1 bg-white/80 border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 disabled:opacity-50"
               />
               <button
                 onClick={handleChatCommand}

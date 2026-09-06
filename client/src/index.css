@@ -61,7 +61,11 @@
 @layer components {
   /* Button variants — buttons explicitly stay BLUE */
   .btn-primary {
-    @apply bg-button text-white px-6 py-3 rounded-lg font-medium hover:bg-button-dark transition-colors duration-200 shadow hover:shadow-md transform hover:-translate-y-0.5;
+    @apply text-white px-6 py-3 rounded-lg font-medium shadow hover:shadow-md transform hover:-translate-y-0.5 transition-colors duration-200;
+    background-color: #2563eb;
+  }
+  .btn-primary:hover {
+    background-color: #1d4ed8;
   }
 
   .btn-secondary {
