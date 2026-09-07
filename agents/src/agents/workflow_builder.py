@@ -57,7 +57,7 @@ class WorkflowBuilderAgent:
                 "label": "Creative Director Agent",
                 "type": "agent",
                 "status": "completed",
-                "model": {"name": "Llama 3.3 70B (Groq)", "provider": "Groq"},
+                "model": {"name": "GPT-OSS 120B (Groq)", "provider": "Groq"},
                 "modelReason": "Selected for structured creative planning and storyboard drafting",
                 "estimatedCost": 0.02,
                 "estimatedTime": 5,

@@ -53,7 +53,7 @@ class CreativeDirectorAgent:
 
     def _generate_with_groq(self, brief: Dict[str, Any], brand_dna: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Generates creative plan using Groq's Llama 3.3 70B model.
+        Generates creative plan using GPT-OSS 120B (Groq) model.
         """
         content_type = brief.get("contentType", "instagram_ad")
         product = brief.get("product", "Product")

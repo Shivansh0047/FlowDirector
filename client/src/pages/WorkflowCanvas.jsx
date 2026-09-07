@@ -55,8 +55,10 @@ export default function WorkflowCanvas() {
 
   // Load demo workflow on mount
   useEffect(() => {
-    loadDemoWorkflow(auraSkinDemoWorkflow)
-  }, [loadDemoWorkflow])
+    if (storeNodes.length === 0) {
+      loadDemoWorkflow(auraSkinDemoWorkflow)
+    }
+  }, [loadDemoWorkflow, storeNodes.length])
 
   // Sync store nodes/edges with local React Flow state
   useEffect(() => {

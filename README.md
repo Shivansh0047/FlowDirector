@@ -19,7 +19,7 @@ Built as an interactive product prototype for creative professionals (editors, d
 
 ## 🌟 Core Pillars
 
-1. **AI Creative Director** — Translates natural language briefs into structured campaign concepts, storyboards, and scripts (Groq Llama 3 + smart fallback templates).
+1. **AI Creative Director** — Translates natural language briefs into structured campaign concepts, storyboards, and scripts (Groq GPT-OSS 120B + smart fallback templates).
 2. **Workflow Auto-Builder** — Automatically converts creative plans into interactive, editable, node-based execution graphs.
 3. **AI Brand Consistency Guardian** — Enforces Brand DNA (palette, tone, restrictions) with rule-based validation and 1-click auto-fixes.
 4. **AI Model Router** — Mathematically scores and selects the optimal AI model for each node based on Quality, Cost, and Speed tradeoffs.
@@ -34,7 +34,7 @@ Built as an interactive product prototype for creative professionals (editors, d
 - ✅ **Brand Guardian** — Pattern-based rule validation with auto-fix suggestions
 - ✅ **Workflow Optimizer** — Cost/speed optimization algorithms (real node swapping & recalculation)
 - ✅ **Workflow Builder** — Dynamic graph construction with routing & brand checks per node
-- ✅ **Creative Director** — Smart context-aware templates (switches to Groq Llama 3 if API key provided)
+- ✅ **Creative Director** — Smart context-aware templates (switches to Groq GPT-OSS 120B if API key provided)
 
 ### Demo/Placeholder:
 - 📦 Node output images — mock Unsplash photos only; no real image/video/audio generation yet
@@ -77,12 +77,12 @@ Built as an interactive product prototype for creative professionals (editors, d
 FlowDirector/
 ├── client/              # React + Vite + Tailwind CSS + React Flow + Zustand
 ├── server/              # Node.js + Express API bridge
-└── agents/              # Python + FastAPI + LangGraph + Groq (Llama 3)
+└── agents/              # Python + FastAPI + LangGraph + Groq GPT-OSS 120B
 ```
 
 - **Frontend:** React (SPA), Tailwind CSS, React Flow (interactive node canvas), Zustand (state management)
 - **Backend:** Node.js / Express
-- **AI Agent Service:** Python, FastAPI, LangGraph, Groq API (free-tier Llama 3)
+- **AI Agent Service:** Python, FastAPI, LangGraph, Groq API (free-tier GPT-OSS 120B )
 - **Cost:** 100% Free / Zero-cost setup
 
 ---

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: flowdirector-agents
+    name: flowdirector
     runtime: python
     buildCommand: "pip install -r agents/requirements.txt"
     startCommand: "python -m uvicorn agents.src.main:app --host 0.0.0.0 --port 8000"

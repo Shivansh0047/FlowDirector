@@ -79,7 +79,7 @@ export default function BriefChatbot({ open = false, onClose, onComplete }) {
     setIsGenerating(true)
 
     try {
-      if (!brief || !brief.product) {
+      if (!formData.product.trim()) {
         alert("Enter product name and brand first.")
         setIsGenerating(false)
         return

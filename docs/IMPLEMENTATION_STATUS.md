@@ -23,7 +23,7 @@
 - **Model Router:** 10-model registry, weighted scoring algorithm
 - **Brand Guardian:** Rule-based validation, auto-fix suggestions
 - **Workflow Optimizer:** Cost/speed reduction algorithms
-- **Creative Director:** Groq Llama 3 integration + smart fallback templates
+- **Creative Director:** Groq GPT-OSS 120B (Groq) integration + smart fallback templates
 - **Workflow Builder:** Graph construction with routing & brand checks
 - FastAPI service with 5 REST endpoints
 
@@ -43,7 +43,7 @@
 - ✅ Brand rule validation (pattern matching, auto-fix)
 - ✅ Cost/speed optimization (model swapping, node priority)
 - ✅ Workflow graph generation (Creative Director → Builder → Router → Guardian)
-- ✅ Creative Director templates (switches to Groq Llama 3 with API key)
+- ✅ Creative Director templates (switches to Groq GPT-OSS 120B with API key)
 
 ### Demo/Placeholder:
 - 📦 Node output images (static placeholders)
